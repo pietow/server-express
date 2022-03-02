@@ -8,9 +8,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.post("/api/login", (req, res) => {
-  res.send({
-    token: "token123",
-  });
+    if(req.body.user === 'admin' && req.body.password === 'admin') {
+        res.send({
+            token: "token123",
+        });
+    }else {
+        res.send({token: "nope"})
+    }
 });
 /* app.post("/api/login", handlers.postLogin); */
 
