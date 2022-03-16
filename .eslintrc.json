@@ -27,6 +27,8 @@
         "camelcase": "off",
         "@typescript-eslint/camelcase": ["off"],
         "no-var": "ERROR",
-        "prefer-const": "ERROR"
+        "prefer-const": "ERROR",
+        "no-restricted-modules": "ERROR",
+        "prefer-template": "ERROR"
     }
 }
