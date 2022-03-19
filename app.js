@@ -4,10 +4,11 @@ const createError = require('http-errors')
 const express = require('express')
 const logger = require('morgan')
 require('dotenv').config()
+
 const MongoDBUtil = require('./modules/mongodb/mongodb.module').MongoDBUtil
+const UserController = require('./modules/user/user.module')().UserController
 
 const path = require('path')
-const port = process.env.PORT || 3033
 const app = express()
 
 app.use(logger('tiny'))
@@ -16,6 +17,8 @@ app.use(express.json())
 
 //establish connection to MongoDB
 MongoDBUtil.init()
+
+app.use('/api/users', UserController)
 
 app.get('/', (req, res) => {
     const pkg = require(path.join(__dirname, 'package.json'))
@@ -41,9 +44,4 @@ app.use((err, req, res, next) => {
     })
 })
 
-app.listen(port, () => {
-    console.log(
-        `Express started on http://localhost:${port}` +
-        '; press Ctrl-C to terminate.',
-    )
-})
+module.exports = app
