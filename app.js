@@ -15,7 +15,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 //establish connection to MongoDB
-MongoDBUtil.init()
+MongoDBUtil.init();
+
 
 app.get('/', (req, res) => {
     const pkg = require(path.join(__dirname, 'package.json'))
