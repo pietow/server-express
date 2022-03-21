@@ -21,8 +21,12 @@
             zipCode: String,
             country: String,
             birthdate: Date,
+            profile: {
+                type: Schema.Types.ObjectId,
+                ref: 'Profile',
+            },
         },
         opts,
     )
-    module.exports = mongoose.model('users', UserSchema)
+    module.exports = mongoose.model('User', UserSchema)
 })()

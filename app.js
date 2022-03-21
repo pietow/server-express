@@ -7,6 +7,8 @@ require('dotenv').config()
 
 const MongoDBUtil = require('./modules/mongodb/mongodb.module').MongoDBUtil
 const UserController = require('./modules/user/user.module')().UserController
+const ProfileController = require('./modules/profile/profile.controller')
+const CapacityController = require('./modules/capacity/capacity.controller')
 
 const path = require('path')
 const app = express()
@@ -19,6 +21,9 @@ app.use(express.json())
 MongoDBUtil.init()
 
 app.use('/api/users', UserController)
+
+app.use('/api/profile', ProfileController)
+app.use('/api/capacity', CapacityController)
 
 app.get('/', (req, res) => {
     const pkg = require(path.join(__dirname, 'package.json'))
