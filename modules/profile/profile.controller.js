@@ -7,7 +7,7 @@
 
     const ProfileMiddleWare = require('./profile.middleware')
 
-    router.get('/', ProfileMiddleWare.findProfile, (req, res) => {
+    router.post('/', ProfileMiddleWare.findProfile, (req, res) => {
         res.status(201).json(req.response)
     })
 

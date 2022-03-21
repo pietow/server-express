@@ -1,18 +1,18 @@
 /** @format */
 ;(function () {
+    'use strict'
     const mongoose = require('mongoose')
+    const Schema = mongoose.Schema
 
-    const profileSchema = new Schema({
+    const ProfileSchema = new Schema({
         bio: String,
         img: String,
         username: String,
         gender: String,
         user: { type: Schema.Types.ObjectId, ref: 'User' },
-        created_at: Date,
-        updated_at: Date,
+        /* created_at: Date, */
+        /* updated_at: Date, */
     })
 
-    const Profile = mongoose.model('Profile', profileSchema)
-
-    module.exports = { Profile }
+    module.exports = mongoose.model('Profile', ProfileSchema)
 })()

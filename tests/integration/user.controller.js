@@ -23,7 +23,7 @@ describe('UserController', function () {
         const User = require('../../modules/user/user.model')
         const userCount = await User.countDocuments()
         console.log(`saved Users:${userCount}`)
-        await User.findOneAndDelete()
+        /* await User.findOneAndDelete() */
         console.log(`saved Users:${userCount}`)
     })
 

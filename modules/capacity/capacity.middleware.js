@@ -4,7 +4,7 @@
     'use strict'
 
     module.exports = {
-        findProfile: findProfile,
+        findCapacity: findCapacity,
     }
 
     const CapacityModel = require('./capacity.model')

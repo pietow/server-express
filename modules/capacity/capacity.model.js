@@ -1,6 +1,7 @@
 /** @format */
 ;(function () {
     const mongoose = require('mongoose')
+    const { Schema } = require('mongoose')
 
     const capacitySchema = new Schema({
         from: Date,

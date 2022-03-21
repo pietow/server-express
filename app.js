@@ -22,8 +22,8 @@ MongoDBUtil.init()
 
 app.use('/api/users', UserController)
 
-app.use('/api/users/:_id/profile', ProfileController)
-app.use('/api/users/:_id/capacity', CapacityController)
+app.use('/api/profile', ProfileController)
+app.use('/api/capacity', CapacityController)
 
 app.get('/', (req, res) => {
     const pkg = require(path.join(__dirname, 'package.json'))
