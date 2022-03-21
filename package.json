@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "nodemon bin/index.js",
     "test": "mocha --recursive ./tests --watch ./modules"
   },
   "keywords": [],
@@ -18,11 +18,17 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "bluebird": "^3.7.2",
+    "blueprint": "^2.1.5",
     "chai": "^4.3.6",
+    "chai-as-promised": "^7.1.1",
+    "chai-http": "^4.3.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "mocha": "^9.2.2",
-    "prettier": "^2.5.1"
+    "node-mocks-http": "^1.11.0",
+    "prettier": "^2.5.1",
+    "sinon": "^13.0.1"
   }
 }

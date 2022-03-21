@@ -1,0 +1,17 @@
+{
+    "_id": "5a5ea8fde43c771e4aa5ea06",
+    "fname": "John",
+    "lname": "Smith",
+    "email": "john.smith@example.com",
+    "phoneNumber": "9876543210",
+    "address": "100 E Street",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10000",
+    "country": "USA",
+    "birthdate": "1/1/2000",
+    "age": 22,
+    "created_at": "1/1/2022",
+    "updated_at": "1/1/2022",
+    "__v": 0
+}
