@@ -17,15 +17,15 @@ const UserFixture = Fixtures.UserFixture
 const baseUri = '/api/users'
 
 describe('UserController', function () {
-    this.timeout(10000) //add timeout.
-    after(async function () {
-        //App already opened connection to db
-        const User = require('../../modules/user/user.model')
-        const userCount = await User.countDocuments()
-        console.log(`saved Users:${userCount}`)
-        /* await User.findOneAndDelete() */
-        console.log(`saved Users:${userCount}`)
-    })
+    /* this.timeout(10000) //add timeout. */
+    /* after(async function () { */
+    /*     //App already opened connection to db */
+    /*     const User = require('../../modules/user/user.model') */
+    /*     const userCount = await User.countDocuments() */
+    /*     console.log(`saved Users:${userCount}`) */
+    /*     /1* await User.findOneAndDelete() *1/ */
+    /*     console.log(`saved Users:${userCount}`) */
+    /* }) */
 
     describe(`POST${baseUri}`, function () {
         it('should add new user', function (done) {
