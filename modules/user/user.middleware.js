@@ -14,6 +14,10 @@
         UserService.fetchUsers()
             .then((data) => {
                 req.response = data
+                if (!Array.isArray(data))
+                    throw Error(
+                        'in UserMiddleware: should return an Array of users',
+                    )
                 next()
             })
             .catch((err) => {

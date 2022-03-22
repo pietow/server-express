@@ -11,5 +11,9 @@
         res.status(201).json(req.response)
     })
 
+    router.get('/', UserMiddleware.getUsers, (req, res) => {
+        res.status(200).json(req.response)
+    })
+
     module.exports = router
 })()
