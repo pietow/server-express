@@ -17,17 +17,7 @@ const UserFixture = Fixtures.UserFixture
 const baseUri = '/api/users'
 
 describe('UserController', function () {
-    /* this.timeout(10000) //add timeout. */
-    /* after(async function () { */
-    /*     //App already opened connection to db */
-    /*     const User = require('../../modules/user/user.model') */
-    /*     const userCount = await User.countDocuments() */
-    /*     console.log(`saved Users:${userCount}`) */
-    /*     /1* await User.findOneAndDelete() *1/ */
-    /*     console.log(`saved Users:${userCount}`) */
-    /* }) */
-
-    describe(`POST${baseUri}`, function () {
+    describe(`POST ${baseUri}`, function () {
         it('should add new user', function (done) {
             //you must use function(such as express app) or a node.js http server as the foundation for your request.
             request(app)
@@ -40,6 +30,21 @@ describe('UserController', function () {
                     expect(res.body.fname).to.equal(
                         UserFixture.createdUser.fname,
                     )
+
+                    done()
+                })
+        })
+    })
+
+    describe(`GET ${baseUri}`, function () {
+        it('should get all users', function (done) {
+            request(app)
+                .get(baseUri)
+                .end(function (err, res) {
+                    expect(res.status).to.equal(200)
+                    expect(res.body).to.not.equal(undefined)
+                    /* expect(res.body).to.be.a('array') */
+                    /* expect(res.body.length).to.not.equal(0) */
 
                     done()
                 })
