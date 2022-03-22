@@ -84,4 +84,49 @@ describe('UserMiddleware', function () {
                 })
         })
     })
+
+    describe('getUsers', function () {
+        let fetchUsers, fetchUsersPromise, expectedUsers, expectedError
+
+        beforeEach(function () {
+            fetchUsers = sinon.stub(UserService, 'fetchUsers') //fetchUsers is a dependancy for middleware method getUsers
+            req.body = {}
+        })
+
+        afterEach(function () {
+            fetchUsers.restore()
+        })
+
+        it('should succesfully get all users', function () {
+            expectedUsers = UserFixture.users
+            fetchUsersPromise = Promise.resolve(expectedUsers)
+            fetchUsers.returns(fetchUsersPromise)
+
+            UserMiddleware.getUsers(req, res, next) //will be receiving a promise from service method
+
+            sinon.assert.callCount(fetchUsers, 1)
+
+            return fetchUsersPromise.then(function () {
+                expect(req.response).to.be.a('array')
+                expect(req.response.length).to.equal(expectedUsers.length)
+                expect(req.response).to.deep.equal(expectedUsers)
+                sinon.assert.callCount(next, 1)
+            })
+        })
+
+        it('should throw error while getting all customers', function () {
+            expectedError = ErrorFixture.unknownError
+
+            fetchUsersPromise = Promise.reject(expectedError)
+            fetchUsers.returns(fetchUsersPromise)
+
+            UserMiddleware.getUsers(req, res, next)
+            sinon.assert.callCount(fetchUsers, 1)
+
+            return fetchUsersPromise.catch(function (error) {
+                expect(error).to.be.a('object')
+                expect(error).to.deep.equal(expectedError)
+            })
+        })
+    })
 })
