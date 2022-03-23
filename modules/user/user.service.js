@@ -5,6 +5,7 @@
     module.exports = {
         createUser: createUser,
         fetchUsers: fetchUsers,
+        findUserById: findUserById,
     }
 
     const UserModel = require('./user.module')().UserModel

@@ -40,12 +40,10 @@
     }
 
     function confirmUser(req, res, next) {
-        UserService.findUserbyId({
-            _id: req.params.userId,
-        })
+        UserService.findUserById(req.params.userId)
             .then((user) => {
                 if (!user) {
-                    return res.status(404).send({ message: 'User Not found.' })
+                    throw Error('User Not found.')
                 }
                 user.status = 'Active'
                 user.save((err) => {
@@ -53,7 +51,9 @@
                         return res.status(500).send({ message: err })
                     }
                 })
+                req.response = user
+                next()
             })
-            .catch((e) => console.log('error', e))
+            .catch((e) => next(e))
     }
 })()
