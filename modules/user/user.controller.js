@@ -15,5 +15,10 @@
         res.status(200).json(req.response)
     })
 
+    router.put('/:userId', UserMiddleware.confirmUser, (req, res) => {
+        console.log(req.params.userId)
+        res.status(201).json(req.response)
+    })
+
     module.exports = router
 })()

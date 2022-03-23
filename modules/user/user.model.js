@@ -25,6 +25,11 @@
                 type: Schema.Types.ObjectId,
                 ref: 'Profile',
             },
+            status: {
+                type: String,
+                enum: ['Pending', 'Active'],
+                default: 'Pending',
+            },
         },
         opts,
     )
