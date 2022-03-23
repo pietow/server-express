@@ -16,4 +16,8 @@
     function createUser(user) {
         return UserModel.create(user)
     }
+
+    function findUserById(userId) {
+        return UserModel.findById(userId)
+    }
 })()
