@@ -10,7 +10,7 @@
     }
 
     const UserService = require('./user.module')().UserService
-    const { hashPassword } = require('../../helpers/password.helper.js')
+    const PasswordService = require('../../helpers/password.helper.js')
 
     function getUsers(req, res, next) {
         UserService.fetchUsers()
@@ -28,14 +28,15 @@
     }
 
     function addUser(req, res, next) {
-        hashPassword(req.body.password)
+        PasswordService.hash(req.body.password)
             .then((hash) => {
                 req.body.password = hash
-                UserService.createUser(req.body).then(success).catch(failure)
+                return UserService.createUser(req.body)
             })
-            .catch((err) => next(err))
+            .then(success)
+            .catch(failure)
 
-        async function success(data) {
+        function success(data) {
             req.response = data
             next()
         }
