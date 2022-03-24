@@ -1,25 +1,33 @@
 /** @format */
+;(function () {
+    'use strict'
 
-const bcrypt = require('bcrypt')
+    module.exports = {
+        hash: hash,
+        compare: compare,
+    }
 
-exports.hashPassword = async (password, saltRounds = 9) => {
-    try {
-        if (saltRounds > 15) {
-            throw new Error('salt number too high')
+    const bcrypt = require('bcrypt')
+
+    async function hash(password, saltRounds = 9) {
+        try {
+            if (saltRounds > 15) {
+                throw new Error('salt number too high')
+            }
+            const salt = await bcrypt.genSalt(saltRounds)
+            return await bcrypt.hash(password, salt)
+        } catch (error) {
+            console.log(error)
+            return error.message
         }
-        const salt = await bcrypt.genSalt(saltRounds)
-        return await bcrypt.hash(password, salt)
-    } catch (error) {
-        console.log(error)
-        return error.message
     }
-}
 
-exports.comparePassword = async (password, hash) => {
-    try {
-        return await bcrypt.compare(password, hash)
-    } catch (error) {
-        console.log(error)
-        return error.message
+    async function compare(password, hash) {
+        try {
+            return await bcrypt.compare(password, hash)
+        } catch (error) {
+            console.log(error)
+            return error.message
+        }
     }
-}
+})()
