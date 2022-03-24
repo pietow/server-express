@@ -11,9 +11,8 @@ exports.hashPassword = async (password, saltRounds = 9) => {
         return await bcrypt.hash(password, salt)
     } catch (error) {
         console.log(error)
+        return error.message
     }
-    // Return null if error
-    return null
 }
 
 exports.comparePassword = async (password, hash) => {
@@ -21,7 +20,6 @@ exports.comparePassword = async (password, hash) => {
         return await bcrypt.compare(password, hash)
     } catch (error) {
         console.log(error)
+        return error.message
     }
-    // Return null if error
-    return null
 }
