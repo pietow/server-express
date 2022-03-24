@@ -36,9 +36,6 @@ describe('UserController', function () {
                     expect(res.body.fname).to.equal(
                         UserFixture.createdUser.fname,
                     )
-                    /* expect(res.body.password).to.equal( */
-                    /*     UserFixture.createdUser.password, */
-                    /* ) */
 
                     done()
                 })
