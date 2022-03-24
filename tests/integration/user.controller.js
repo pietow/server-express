@@ -15,7 +15,7 @@ const Fixtures = require('../fixtures/fixtures')
 const UserFixture = Fixtures.UserFixture
 
 const baseUri = '/api/users'
-const { comparePassword } = require('../../helpers/password.helper')
+const PasswordService = require('../../helpers/password.helper')
 
 describe('UserController', function () {
     describe(`POST ${baseUri}`, function () {
@@ -25,7 +25,7 @@ describe('UserController', function () {
                 .post(baseUri)
                 .send(UserFixture.newUser)
                 .end(async (err, res) => {
-                    const bool = await comparePassword(
+                    const bool = await PasswordService.compare(
                         'password',
                         res.body.password,
                     )
