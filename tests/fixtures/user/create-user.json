@@ -11,6 +11,7 @@
     "country": "USA",
     "birthdate": "1/1/2000",
     "age": 22,
+    "password": "$2b$09$DpmfwX6ViabFukPgrAKAtOqb0A3T.5rhtLNie8obwgNtOEZjOtBnC",
     "created_at": "1/1/2022",
     "updated_at": "1/1/2022",
     "__v": 0
