@@ -6,6 +6,7 @@
     module.exports = {
         addUser: addUser,
         getUsers: getUsers,
+        getUserById: getUserById,
         confirmUser: confirmUser,
     }
 
@@ -39,8 +40,15 @@
             })
     }
 
+    function getUserById(req, res, next) {
+        UserService.fetchUserById(req.params.userId).then((data) => {
+            req.response = data
+            next()
+        })
+    }
+
     function confirmUser(req, res, next) {
-        UserService.findUserById(req.params.userId)
+        UserService.fetchUserById(req.params.userId)
             .then((user) => {
                 if (!user) {
                     throw Error('User Not found.')
