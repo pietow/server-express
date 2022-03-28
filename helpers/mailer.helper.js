@@ -1,27 +1,37 @@
 /** @format */
 
 const nodemailer = require('nodemailer')
+const port = require('../bin/index')
 
-module.exports.sendConfirmationEmail = (name, email, userId) => {
+module.exports.sendConfirmationMail = (fname, lname, email, userId) => {
     const user = process.env.MAILUSER
     const pass = process.env.MAILPASSWORD
     const transport = nodemailer.createTransport({
-        service: 'Gmail',
+        service: 'gmail',
         auth: {
             user: user,
             pass: pass,
         },
+        debug: true, // show debug output
+        logger: true, // log information in console
     })
-    transport
-        .sendMail({
+    transport.sendMail(
+        {
             from: user,
             to: email,
             subject: 'Please confirm your registration at localhost:3000',
             html: `<h1>Email Confirmation for localhost:3000</h1>
-                <h2>Hello ${name}</h2>
+                <h2>Hello ${fname} ${lname}</h2>
                 <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
-                <a href=http://localhost:3000/api/user/confirm/${userId}> Click here</a>
+                <a href=http://localhost:${currentPort}/api/users/${userId}> Click here</a>
                 </div>`,
-        })
-        .catch((err) => console.log(err))
+        },
+        (error, info) => {
+            if (error) {
+                console.log(`Error in sendmail function: ${error}`)
+            } else {
+                console.log(`Mail sent with the following information: ${info}`)
+            }
+        },
+    )
 }

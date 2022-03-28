@@ -13,6 +13,7 @@
         '/',
         HashMiddleware.getHash,
         UserMiddleware.addUser,
+        UserMiddleware.sendConfirmationMail,
         (req, res) => {
             res.status(201).json(req.response)
         },
