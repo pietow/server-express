@@ -9,9 +9,12 @@
         getUserById: getUserById,
         confirmUser: confirmUser,
         getUserByUserName: getUserByUserName,
+        sendConfirmationMail: sendConfirmationMail,
+        modifyUser: modifyUser,
     }
 
     const UserService = require('./user.module')().UserService
+    const MailerHelper = require('../../helpers/mailer.helper')
 
     function addUser(req, res, next) {
         UserService.createUser(req.body).then(success).catch(failure)
@@ -59,6 +62,16 @@
             .catch((err) => next(err))
     }
 
+    function sendConfirmationMail(req, res, next) {
+        MailerHelper.sendConfirmationMail(
+            req.response.fname,
+            req.response.lname,
+            req.response.email,
+            req.response._id,
+        )
+        next()
+    }
+
     function confirmUser(req, res, next) {
         UserService.fetchUserById(req.params.userId)
             .then((user) => {
@@ -72,6 +85,15 @@
                     }
                 })
                 req.response = user
+                next()
+            })
+            .catch((e) => next(e))
+    }
+
+    function modifyUser(req, res, next) {
+        UserService.updateUser(req.params.userId, req.body)
+            .then((data) => {
+                req.response = data
                 next()
             })
             .catch((e) => next(e))

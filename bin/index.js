@@ -10,3 +10,5 @@ app.listen(port, () => {
             '; press Ctrl-C to terminate.',
     )
 })
+
+module.exports = port
