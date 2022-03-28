@@ -10,6 +10,7 @@
         confirmUser: confirmUser,
         getUserByUserName: getUserByUserName,
         sendConfirmationMail: sendConfirmationMail,
+        modifyUser: modifyUser,
     }
 
     const UserService = require('./user.module')().UserService
@@ -84,6 +85,15 @@
                     }
                 })
                 req.response = user
+                next()
+            })
+            .catch((e) => next(e))
+    }
+
+    function modifyUser(req, res, next) {
+        UserService.updateUser(req.params.userId, req.body)
+            .then((data) => {
+                req.response = data
                 next()
             })
             .catch((e) => next(e))
