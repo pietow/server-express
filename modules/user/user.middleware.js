@@ -7,9 +7,11 @@
         addUser: addUser,
         getUsers: getUsers,
         confirmUser: confirmUser,
+        sendConfirmationMail: sendConfirmationMail,
     }
 
     const UserService = require('./user.module')().UserService
+    const MailerHelper = require('../../helpers/mailer.helper')
 
     function getUsers(req, res, next) {
         UserService.fetchUsers()
@@ -39,7 +41,17 @@
         }
     }
 
+    function sendConfirmationMail(req, res, next) {
+        MailerHelper.sendConfirmationMail(
+            req.response.fname,
+            req.response.lname,
+            req.response.email,
+            req.response._id,
+        )
+    }
+
     function confirmUser(req, res, next) {
+        console.log(req.params.userId)
         UserService.findUserById(req.params.userId)
             .then((user) => {
                 if (!user) {

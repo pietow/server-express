@@ -20,10 +20,6 @@ app.use(express.json())
 //establish connection to MongoDB
 MongoDBUtil.init()
 
-/* app.use('/api/users', (req, res, next) => { */
-/*     console.log(req.body) */
-/*     next() */
-/* }) */
 app.use('/api/users', UserController)
 app.use('/api/profile', ProfileController)
 app.use('/api/capacity', CapacityController)

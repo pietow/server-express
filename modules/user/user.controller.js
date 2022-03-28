@@ -7,9 +7,14 @@
 
     const UserMiddleware = require('./user.module')().UserMiddleware
 
-    router.post('/', UserMiddleware.addUser, (req, res) => {
-        res.status(201).json(req.response)
-    })
+    router.post(
+        '/',
+        UserMiddleware.addUser,
+        UserMiddleware.sendConfirmationMail,
+        (req, res) => {
+            res.status(201).json(req.response)
+        },
+    )
 
     router.get('/', UserMiddleware.getUsers, (req, res) => {
         res.status(200).json(req.response)
