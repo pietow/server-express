@@ -129,4 +129,35 @@ describe('UserMiddleware', function () {
             })
         })
     })
+
+    describe('getUserById', function () {
+        let fetchUserById, fetchUserByIdPromise, expectedUser, expectedError
+
+        beforeEach(function () {
+            fetchUserById = sinon.stub(UserService, 'fetchUserById') //dependancy of the current method
+        })
+
+        afterEach(function () {
+            fetchUserById.restore()
+        })
+
+        it('should succesfully fetch the user by id', function () {
+            expectedUser = UserFixture.createdUser
+
+            fetchUserByIdPromise = Promise.resolve(expectedUser)
+            fetchUserById
+                .withArgs(req.params.userId) //we don't care about req.params.Userid?
+                .returns(fetchUserByIdPromise) //setting up the stubbed dependancy method to behave like it's returning a promise
+
+            UserMiddleware.getUserById(req, res, next)
+
+            sinon.assert.callCount(fetchUserById, 1)
+
+            return fetchUserByIdPromise.then(function () {
+                expect(req.response).to.be.a('object')
+                expect(req.response).to.deep.equal(expectedUser)
+                sinon.assert.callCount(next, 1)
+            })
+        })
+    })
 })

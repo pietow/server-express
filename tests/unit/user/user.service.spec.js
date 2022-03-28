@@ -24,7 +24,7 @@ let UserModelMock //Attrape: placeholder for the UserModel; Mock objects returns
 describe('UserService', function () {
     beforeEach(function () {
         //runs before each test in this block
-        UserModelMock = sinon.mock(UserModel)
+        UserModelMock = sinon.mock(UserModel) //sinon-mongoose
     })
 
     afterEach(function () {
@@ -36,7 +36,7 @@ describe('UserService', function () {
         mongoose.models = {}
         mongoose.modelSchemas = {}
 
-        return mongoose.connection.close()
+        mongoose.connection.close() //!!!!!!!!!!!!!!!!!!!return removed; watch out; unsure if it will break; commit--> refactor: clean code
     })
     //first Test Suite
     describe('createUser', function () {
@@ -88,13 +88,51 @@ describe('UserService', function () {
                 expect(data).to.deep.equal(expectedUsers) //expect({a: 1}).to.deep.equal({a: 1});
             })
         })
-        it('should throw error while fetching users', function () {
+        it('should throw error while fetching all users', function () {
             expectedError = ErrorFixture.unknownError
 
             UserModelMock.expects('find')
                 .withArgs({})
                 .chain('exec')
                 .rejects(expectedError)
+            return UserService.fetchUsers().catch(function (err) {
+                UserModelMock.verify()
+                expect(err).to.deep.equal(expectedError)
+            })
+        })
+    })
+
+    describe('fetchUserById', function () {
+        let expectedFetchedUser, userId, expectedError
+
+        it('should succesfully fetch user by id', function () {
+            expectedFetchedUser = UserFixture.createdUser
+            userId = expectedFetchedUser._id
+
+            UserModelMock.expects('findById')
+                .withArgs(userId)
+                .chain('exec')
+                .resolves(expectedFetchedUser)
+
+            return UserService.fetchUserById(userId).then(function (data) {
+                UserModelMock.verify()
+                expect(data).to.deep.equal(expectedFetchedUser)
+            })
+        })
+
+        it('should throw error while fetching user by id', function () {
+            userId = UserFixture._id
+            expectedError = ErrorFixture.unknownError
+
+            UserModelMock.expects('findById')
+                .withArgs(userId)
+                .chain('exec')
+                .rejects(expectedError)
+
+            return UserService.fetchUserById(userId).catch(function (err) {
+                UserModelMock.verify()
+                expect(err).to.deep.equal(expectedError)
+            })
         })
     })
 })

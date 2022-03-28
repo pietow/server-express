@@ -20,13 +20,9 @@ app.use(express.json())
 //establish connection to MongoDB
 MongoDBUtil.init()
 
-/* app.use('/api/users', (req, res, next) => { */
-/*     console.log(req.body) */
-/*     next() */
-/* }) */
 app.use('/api/users', UserController)
-app.use('/api/profile', ProfileController)
-app.use('/api/capacity', CapacityController)
+/* app.use('/api/profile', ProfileController) */
+/* app.use('/api/capacity', CapacityController) */
 
 app.get('/', (req, res) => {
     const pkg = require(path.join(__dirname, 'package.json'))
@@ -45,12 +41,9 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
     //provide error only in development
     const error = req.app.get('env') === 'development' ? err : {}
-    /* console.log(req.app.get('env')) */
-    /* console.log(error) */
     //set status header
     res.status(err.status || 500)
     //render error page
-    console.log(error.message)
     res.json({
         error: error.message,
     })

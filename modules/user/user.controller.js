@@ -5,18 +5,35 @@
     const express = require('express')
     const router = express.Router()
 
-    const UserMiddleware = require('./user.module')().UserMiddleware
+    const Module = require('./user.module')()
+    const UserMiddleware = Module.UserMiddleware
+    const HashMiddleware = Module.HashMiddleware
 
-    router.post('/', UserMiddleware.addUser, (req, res) => {
-        res.status(201).json(req.response)
-    })
-
+    router.post(
+        '/',
+        HashMiddleware.getHash,
+        UserMiddleware.addUser,
+        (req, res) => {
+            res.status(201).json(req.response)
+        },
+    )
     router.get('/', UserMiddleware.getUsers, (req, res) => {
         res.status(200).json(req.response)
     })
 
-    router.put('/:userId', UserMiddleware.confirmUser, (req, res) => {
-        console.log(req.params.userId)
+    router.get('/:userId', UserMiddleware.getUserById, (req, res) => {
+        res.status(200).json(req.response)
+    })
+    router.post(
+        '/login',
+        UserMiddleware.getUserByUserName,
+        HashMiddleware.compareHash,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
+
+    router.put('/:userId/confirm', UserMiddleware.confirmUser, (req, res) => {
         res.status(201).json(req.response)
     })
 

@@ -14,6 +14,7 @@
             lname: String,
             username: String,
             email: String,
+            password: String,
             phoneNumber: String,
             address: String,
             city: String,

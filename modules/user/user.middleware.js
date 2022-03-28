@@ -6,10 +6,25 @@
     module.exports = {
         addUser: addUser,
         getUsers: getUsers,
+        getUserById: getUserById,
         confirmUser: confirmUser,
+        getUserByUserName: getUserByUserName,
     }
 
     const UserService = require('./user.module')().UserService
+
+    function addUser(req, res, next) {
+        UserService.createUser(req.body).then(success).catch(failure)
+
+        function success(data) {
+            req.response = data
+            next()
+        }
+
+        function failure(err) {
+            next(err)
+        }
+    }
 
     function getUsers(req, res, next) {
         UserService.fetchUsers()
@@ -26,21 +41,26 @@
             })
     }
 
-    function addUser(req, res, next) {
-        UserService.createUser(req.body).then(success).catch(failure)
+    function getUserById(req, res, next) {
+        UserService.fetchUserById(req.params.userId)
+            .then((data) => {
+                req.response = data
+                next()
+            })
+            .catch((err) => next(err))
+    }
 
-        function success(data) {
-            req.response = data
-            next()
-        }
-
-        function failure(err) {
-            next(err)
-        }
+    function getUserByUserName(req, res, next) {
+        UserService.fetchUserByUserName(req.body)
+            .then((data) => {
+                req.response = data
+                next()
+            })
+            .catch((err) => next(err))
     }
 
     function confirmUser(req, res, next) {
-        UserService.findUserById(req.params.userId)
+        UserService.fetchUserById(req.params.userId)
             .then((user) => {
                 if (!user) {
                     throw Error('User Not found.')

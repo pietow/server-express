@@ -5,7 +5,8 @@
     module.exports = {
         createUser: createUser,
         fetchUsers: fetchUsers,
-        findUserById: findUserById,
+        fetchUserById: fetchUserById,
+        fetchUserByUserName: fetchUserByUserName,
     }
 
     const UserModel = require('./user.module')().UserModel
@@ -18,7 +19,10 @@
         return UserModel.create(user)
     }
 
-    function findUserById(userId) {
-        return UserModel.findById(userId)
+    function fetchUserById(userId) {
+        return UserModel.findById(userId).exec()
+    }
+    function fetchUserByUserName(username) {
+        return UserModel.findOne({ username: username.username }).exec()
     }
 })()
