@@ -34,7 +34,7 @@
         },
     )
 
-    router.put('/:userId/confirm', UserMiddleware.confirmUser, (req, res) => {
+    router.get('/:userId/confirm', UserMiddleware.confirmUser, (req, res) => {
         res.status(201).json(req.response)
     })
 

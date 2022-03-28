@@ -23,7 +23,7 @@ module.exports.sendConfirmationMail = (fname, lname, email, userId) => {
             html: `<h1>Email Confirmation for localhost:3000</h1>
                 <h2>Hello ${fname} ${lname}</h2>
                 <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
-                <a href=http://localhost:${currentPort}/api/users/${userId}> Click here</a>
+                <a href=http://localhost:${process.env.PORT || 3033}/api/users/${userId}/confirm/> Click here</a>
                 </div>`,
         },
         (error, info) => {

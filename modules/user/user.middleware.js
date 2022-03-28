@@ -68,6 +68,7 @@
             req.response.email,
             req.response._id,
         )
+        next()
     }
 
     function confirmUser(req, res, next) {
