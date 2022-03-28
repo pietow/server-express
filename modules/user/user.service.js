@@ -7,6 +7,8 @@
         fetchUsers: fetchUsers,
         fetchUserById: fetchUserById,
         fetchUserByUserName: fetchUserByUserName,
+        updateUser: updateUser,
+        deleteUser: deleteUser,
     }
 
     const UserModel = require('./user.module')().UserModel
@@ -22,7 +24,16 @@
     function fetchUserById(userId) {
         return UserModel.findById(userId).exec()
     }
+
     function fetchUserByUserName(username) {
         return UserModel.findOne({ username: username.username }).exec()
+    }
+
+    function updateUser(userId, user) {
+        return UserModel.findByIdAndUpdate(userId, user, { new: true }).exec()
+    }
+
+    function deleteUser(userId) {
+            return UserModel.findByIdAndRemove(userId).exec()
     }
 })()

@@ -15,7 +15,7 @@
                 req.body.password = hash
                 next()
             })
-            .catch((err) => next(`In HashMiddleware: ${err}`))
+            .catch((err) => next(err))
     }
 
     function compareHash(req, res, next) {

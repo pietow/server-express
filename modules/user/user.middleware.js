@@ -10,6 +10,8 @@
         confirmUser: confirmUser,
         getUserByUserName: getUserByUserName,
         sendConfirmationMail: sendConfirmationMail,
+        modifyUser: modifyUser,
+        removeUser: removeUser,
     }
 
     const UserService = require('./user.module')().UserService
@@ -86,6 +88,24 @@
                 req.response = user
                 next()
             })
-            .catch((e) => next(e))
+            .catch((err) => next(err))
+    }
+
+    function modifyUser(req, res, next) {
+        UserService.updateUser(req.params.userId, req.body)
+            .then((data) => {
+                req.response = data
+                next()
+            })
+            .catch((err) => next(err))
+    }
+
+    function removeUser(req, res, next) {
+        UserService.deleteUser(req.params.userId)
+            .then((data) => {
+                req.response = data
+                next()
+            })
+            .catch((err) => next(err))
     }
 })()
