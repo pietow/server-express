@@ -36,6 +36,10 @@
         },
     )
 
+    router.delete('/:userId', UserMiddleware.removeUser, (req, res) => {
+        res.status(200).json(req.response)
+    })
+
     router.post(
         '/login',
         UserMiddleware.getUserByUserName,
