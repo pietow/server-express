@@ -8,6 +8,7 @@
         getUsers: getUsers,
         getUserById: getUserById,
         confirmUser: confirmUser,
+        getUserByUserName: getUserByUserName,
     }
 
     const UserService = require('./user.module')().UserService
@@ -41,10 +42,21 @@
     }
 
     function getUserById(req, res, next) {
-        UserService.fetchUserById(req.params.userId).then((data) => {
-            req.response = data
-            next()
-        })
+        UserService.fetchUserById(req.params.userId)
+            .then((data) => {
+                req.response = data
+                next()
+            })
+            .catch((err) => next(err))
+    }
+
+    function getUserByUserName(req, res, next) {
+        UserService.fetchUserByUserName(req.body)
+            .then((data) => {
+                req.response = data
+                next()
+            })
+            .catch((err) => next(err))
     }
 
     function confirmUser(req, res, next) {

@@ -1,10 +1,9 @@
 /** @format */
 
-const { hashPassword } = require('./password.helper.js')
-const { comparePassword } = require('./password.helper.js')
+const PasswordService = require('./password.helper.js')
 ;(async function () {
-    const hash = await hashPassword('password')
-    const bool = await comparePassword('password', hash)
+    const hash = await PasswordService.hash('password')
+    const bool = await PasswordService.compare('password1', hash)
     console.log(hash)
     console.log(bool)
 })()

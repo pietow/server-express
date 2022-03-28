@@ -2,9 +2,14 @@
 ;(function () {
     'use strict'
 
+    module.exports = {
+        getHash: getHash,
+        compareHash: compareHash,
+    }
+
     const PasswordService = require('../../helpers/password.helper')
 
-    const getHash = (req, res, next) => {
+    function getHash(req, res, next) {
         PasswordService.hash(req.body.password)
             .then((hash) => {
                 req.body.password = hash
@@ -12,7 +17,16 @@
             })
             .catch((err) => next(`In HashMiddleware: ${err}`))
     }
-    module.exports = {
-        getHash: getHash,
+
+    function compareHash(req, res, next) {
+        PasswordService.compare(req.body.password, req.response.password)
+            .then((isValid) => {
+                if (!isValid) {
+                    throw new Error('Access denied!')
+                } else {
+                    next()
+                }
+            })
+            .catch((err) => next(err))
     }
 })()

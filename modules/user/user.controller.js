@@ -24,6 +24,14 @@
     router.get('/:userId', UserMiddleware.getUserById, (req, res) => {
         res.status(200).json(req.response)
     })
+    router.post(
+        '/login',
+        UserMiddleware.getUserByUserName,
+        HashMiddleware.compareHash,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
 
     router.put('/:userId/confirm', UserMiddleware.confirmUser, (req, res) => {
         res.status(201).json(req.response)

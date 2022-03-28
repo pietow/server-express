@@ -6,6 +6,7 @@
         createUser: createUser,
         fetchUsers: fetchUsers,
         fetchUserById: fetchUserById,
+        fetchUserByUserName: fetchUserByUserName,
     }
 
     const UserModel = require('./user.module')().UserModel
@@ -20,5 +21,8 @@
 
     function fetchUserById(userId) {
         return UserModel.findById(userId).exec()
+    }
+    function fetchUserByUserName(username) {
+        return UserModel.findOne({ username: username.username }).exec()
     }
 })()
