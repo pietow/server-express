@@ -4,6 +4,7 @@ const createError = require('http-errors')
 const express = require('express')
 const logger = require('morgan')
 require('dotenv').config()
+const cors = require('cors')
 
 const MongoDBUtil = require('./modules/mongodb/mongodb.module').MongoDBUtil
 const UserController = require('./modules/user/user.module')().UserController
@@ -20,6 +21,7 @@ app.use(express.json())
 //establish connection to MongoDB
 MongoDBUtil.init()
 
+app.use('/api/', cors())
 app.use('/api/users', UserController)
 /* app.use('/api/profile', ProfileController) */
 /* app.use('/api/capacity', CapacityController) */
