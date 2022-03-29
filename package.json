@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon bin/index.js",
+    "start": "node bin/index.js",
     "test": "mocha -n unhandled-rejections=strict --recursive ./tests --watch ./modules"
   },
   "keywords": [],
