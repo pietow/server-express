@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node bin/index.js",
-    "test": "mocha -n unhandled-rejections=strict --recursive ./tests --watch ./modules"
+    "test": "mocha -n unhandled-rejections=strict --recursive --slow 0 ./tests --watch ./modules"
   },
   "keywords": [],
   "author": "",
