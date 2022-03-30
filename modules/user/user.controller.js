@@ -49,9 +49,14 @@
         },
     )
 
-    router.get('/:userId/confirm', UserMiddleware.confirmUser, (req, res) => {
-        res.status(201).json(req.response)
-    })
+    router.get(
+        '/:userId/confirm',
+        UserMiddleware.setActive,
+        UserMiddleware.modifyUser,
+        (req, res) => {
+            res.status(201).json(req.response)
+        },
+    )
 
     module.exports = router
 })()
