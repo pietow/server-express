@@ -7,7 +7,7 @@
         addUser: addUser,
         getUsers: getUsers,
         getUserById: getUserById,
-        confirmUser: confirmUser,
+        setActive: setActive,
         getUserByUserName: getUserByUserName,
         sendConfirmationMail: sendConfirmationMail,
         modifyUser: modifyUser,
@@ -70,16 +70,21 @@
             req.response.email,
             req.response._id,
         )
-        next()
+            .then(() => {
+                next()
+            })
+            .catch((err) => {
+                next(err)
+            })
     }
 
-    function confirmUser(req, res, next) {
+    function setActive(req, res, next) {
         UserService.fetchUserById(req.params.userId)
             .then((user) => {
                 if (!user) {
                     throw Error('User Not found.')
                 }
-                user.status = 'Active'
+                user.active = true
                 user.save((err) => {
                     if (err) {
                         return res.status(500).send({ message: err })

@@ -34,6 +34,6 @@
     }
 
     function deleteUser(userId) {
-            return UserModel.findByIdAndRemove(userId).exec()
+        return UserModel.findByIdAndRemove(userId).exec()
     }
 })()
