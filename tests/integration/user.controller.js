@@ -24,6 +24,7 @@ const testData = {
 describe('UserController', function () {
     describe(`POST ${baseUri}`, function () {
         it('should add new user', function (done) {
+            this.timeout(10000)
             //you must use function(such as express app) or a node.js http server as the foundation for your request.
             request(app)
                 .post(baseUri)

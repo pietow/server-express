@@ -12,8 +12,8 @@ module.exports.sendConfirmationMail = async (fname, lname, email, userId) => {
                 user: user,
                 pass: pass,
             },
-            debug: true, // show debug output
-            logger: true, // log information in console
+            /* debug: true, // show debug output */
+            /* logger: true, // log information in console */
         })
         transport.sendMail(
             {
