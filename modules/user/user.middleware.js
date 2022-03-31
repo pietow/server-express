@@ -70,12 +70,7 @@
             req.response.email,
             req.response._id,
         )
-            .then(() => {
-                next()
-            })
-            .catch((err) => {
-                next(err)
-            })
+        next()
     }
 
     function setActive(req, res, next) {
