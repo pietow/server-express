@@ -69,8 +69,11 @@
             req.response.lname,
             req.response.email,
             req.response._id,
-        )
-        next()
+        ).then((data) => {
+            console.log('SENDMAIL')
+            /* console.log(data) */
+            next()
+        }).catch((err) => next(err))
     }
 
     function setActive(req, res, next) {
