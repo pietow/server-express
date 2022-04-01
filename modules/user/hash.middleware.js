@@ -10,14 +10,17 @@
     const PasswordService = require('../../helpers/password.helper')
 
     function getHash(req, res, next) {
-        PasswordService.hash(req.body.password)
-            .then((hash) => {
-                req.body.password = hash
-                next()
-            })
-            .catch((err) => next(err))
+        if (req.body.hasOwnProperty('password')) {
+            PasswordService.hash(req.body.password)
+                .then((hash) => {
+                    req.body.password = hash
+                    next()
+                })
+                .catch((err) => next(err))
+        } else {
+            throw new Error('Password required')
+        }
     }
-
     function compareHash(req, res, next) {
         PasswordService.compare(req.body.password, req.response.password)
             .then((isValid) => {
