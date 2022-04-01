@@ -15,10 +15,6 @@
             username: String,
             email: String,
             password: String,
-            profile: {
-                type: Schema.Types.ObjectId,
-                ref: 'Profile',
-            },
             active: {
                 type: Boolean,
                 default: false,

@@ -13,6 +13,7 @@
         ProfileService.createProfile({ user: req.response?._id })
             .then((data) => {
                 if (req.response) {
+                    req.response = req.response.toObject()
                     req.response.profile = data
                 } else {
                     req.response = data
