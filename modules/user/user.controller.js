@@ -30,6 +30,14 @@
         res.status(200).json(req.response)
     })
 
+    router.get(
+        '/:userId/profile',
+        ProfileMiddleware.getProfileByUserId,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
+
     router.put(
         '/:userId',
         HashMiddleware.getHash,
