@@ -4,14 +4,23 @@
     const mongoose = require('mongoose')
     const Schema = mongoose.Schema
 
+    const opts = {
+        timestamps: true,
+    }
+
     const ProfileSchema = new Schema({
-        bio: String,
-        img: String,
-        username: String,
+        photo: String,
+        onlineStatus: Date,
+        title: String,
+        text: String,
+        motto: String,
         gender: String,
+        language: [String],
+        city: String,
+        destrict: String,
+        country: String,
+        birthdate: Date,
         user: { type: Schema.Types.ObjectId, ref: 'User' },
-        /* created_at: Date, */
-        /* updated_at: Date, */
     })
 
     module.exports = mongoose.model('Profile', ProfileSchema)

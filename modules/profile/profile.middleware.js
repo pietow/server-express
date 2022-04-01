@@ -4,29 +4,45 @@
     'use strict'
 
     module.exports = {
-        findProfile: findProfile,
+        addProfile: addProfile,
+        getProfileByUserId: getProfileByUserId,
+        modifyProfile: modifyProfile,
     }
 
-    const Profile = require('./profile.model')
+    const ProfileService = require('./profile.module')().ProfileService
 
-    function findProfile(req, res, next) {
-        return Profile.findOne()
-            .populate('user')
-            .exec(function (err, profile) {
-                if (err) return next(err)
-                req.response = profile.populated('user')
-                console.log(req.response)
-                console.log('The profile is %s', profile)
+    function addProfile(req, res, next) {
+        ProfileService.createProfile({ user: req.response?._id })
+            .then((data) => {
+                if (req.response) {
+                    req.response = req.response.toObject()
+                    req.response.profile = data
+                } else {
+                    req.response = data
+                }
                 next()
-                // prints "The author is Ian Fleming"
             })
-        /* return Profile.create({ bio: 'Jean-Luc Picard', user: req.body.user }) */
-        /*     .then((data) => { */
-        /*         req.response = data */
-        /*         next() */
-        /*     }) */
-        /*     .catch((er) => { */
-        /*         next(er) */
-        /*     }) */
+            .catch((err) => next(err))
+    }
+
+    function getProfileByUserId(req, res, next) {
+        ProfileService.fetchProfileByUserId(req.params.userId)
+            .then((data) => {
+                req.response = data
+                next()
+            })
+            .catch((err) => next(err))
+    }
+
+    function modifyProfile(req, res, next) {
+        ProfileService.updateProfileByUserId(req.params.userId, req.body)
+            .then((data) => {
+                req.response = req.response.toObject()
+                req.response.profile = data
+                next()
+            })
+            .catch((err) => {
+                next(err)
+            })
     }
 })()

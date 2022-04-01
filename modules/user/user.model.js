@@ -15,17 +15,6 @@
             username: String,
             email: String,
             password: String,
-            phoneNumber: String,
-            address: String,
-            city: String,
-            state: String,
-            zipCode: String,
-            country: String,
-            birthdate: Date,
-            profile: {
-                type: Schema.Types.ObjectId,
-                ref: 'Profile',
-            },
             active: {
                 type: Boolean,
                 default: false,
@@ -33,5 +22,6 @@
         },
         opts,
     )
+
     module.exports = mongoose.model('User', UserSchema)
 })()
