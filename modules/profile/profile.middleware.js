@@ -5,6 +5,7 @@
 
     module.exports = {
         addProfile: addProfile,
+        getProfileByUserId: getProfileByUserId,
     }
 
     const ProfileService = require('./profile.module')().ProfileService
@@ -18,6 +19,15 @@
                 } else {
                     req.response = data
                 }
+                next()
+            })
+            .catch((err) => next(err))
+    }
+
+    function getProfileByUserId(req, res, next) {
+        ProfileService.fetchProfileByUserId(req.params.userId)
+            .then((data) => {
+                req.response = data
                 next()
             })
             .catch((err) => next(err))

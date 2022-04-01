@@ -16,5 +16,9 @@
         res.status(201).json(req.response)
     })
 
+    router.get('/:userId', ProfileMiddleware.getProfileByUserId, (req, res) => {
+        res.status(200).json(req.response)
+    })
+
     module.exports = router
 })()
