@@ -12,7 +12,6 @@
         sendConfirmationMail: sendConfirmationMail,
         modifyUser: modifyUser,
         removeUser: removeUser,
-        modifyUserWithProfile: modifyUserWithProfile,
     }
 
     const UserService = require('./user.module')().UserService
@@ -109,18 +108,6 @@
         UserService.deleteUser(req.params.userId)
             .then((data) => {
                 req.response = data
-                next()
-            })
-            .catch((err) => next(err))
-    }
-
-    function modifyUserWithProfile(req, res, next) {
-        UserService.updateUser(req.response?._id, {
-            profile: req.response?.profile._id,
-        })
-            .then((data) => {
-                req.response = req.response.toObject()
-                req.response.profileID = data.profile
                 next()
             })
             .catch((err) => next(err))
