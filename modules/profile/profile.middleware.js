@@ -6,6 +6,7 @@
     module.exports = {
         addProfile: addProfile,
         getProfileByUserId: getProfileByUserId,
+        modifyProfile: modifyProfile,
     }
 
     const ProfileService = require('./profile.module')().ProfileService
@@ -31,5 +32,17 @@
                 next()
             })
             .catch((err) => next(err))
+    }
+
+    function modifyProfile(req, res, next) {
+        ProfileService.updateProfileByUserId(req.params.userId, req.body)
+            .then((data) => {
+                req.response = req.response.toObject()
+                req.response.profile = data
+                next()
+            })
+            .catch((err) => {
+                next(err)
+            })
     }
 })()

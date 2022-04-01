@@ -42,6 +42,7 @@
         '/:userId',
         HashMiddleware.getHash,
         UserMiddleware.modifyUser,
+        ProfileMiddleware.modifyProfile,
         (req, res) => {
             res.status(200).json(req.response)
         },
