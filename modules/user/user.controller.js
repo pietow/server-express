@@ -6,13 +6,17 @@
     const router = express.Router()
 
     const Module = require('./user.module')()
+    const ProfileModule = require('../profile/profile.module')()
     const UserMiddleware = Module.UserMiddleware
+    const ProfileMiddleware = ProfileModule.ProfileMiddleware
     const HashMiddleware = Module.HashMiddleware
 
     router.post(
         '/',
         HashMiddleware.getHash,
         UserMiddleware.addUser,
+        ProfileMiddleware.addProfile,
+        UserMiddleware.modifyUserWithProfile,
         UserMiddleware.sendConfirmationMail,
         (req, res) => {
             res.status(201).json(req.response)

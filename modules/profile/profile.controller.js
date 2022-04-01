@@ -5,9 +5,14 @@
     const express = require('express')
     const router = express.Router()
 
-    const ProfileMiddleWare = require('./profile.middleware')
+    const Module = require('./profile.module')()
+    const ProfileMiddleware = Module.ProfileMiddleware
 
-    router.post('/', ProfileMiddleWare.findProfile, (req, res) => {
+    /* router.post('/', ProfileMiddleWare.findProfile, (req, res) => { */
+    /*     res.status(201).json(req.response) */
+    /* }) */
+
+    router.post('/', ProfileMiddleware.addProfile, (req, res) => {
         res.status(201).json(req.response)
     })
 
