@@ -4,19 +4,18 @@
     'use strict'
 
     module.exports = {
-        findAccommodation: findAccommodation,
+        getAccommodationByUserId: getAccommodationByUserId,
     }
 
-    const AccommodationModel = require('./accommodation.model')
+    const AccommodationService = require('./accommodation.module')()
+        .AccommodationService
 
-    function findAccommodation(req, res, next) {
-        AccommodationModel.find({ user: req.params.profileId })
+    function getAccommodationByUserId(req, res, next) {
+        AccommodationService.fetchAccommodationByUserId(req.params.userId)
             .then((data) => {
                 req.response = data
                 next()
             })
-            .catch((error) => {
-                next(error)
-            })
+            .catch((err) => next(err))
     }
 })()
