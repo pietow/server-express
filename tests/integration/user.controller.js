@@ -75,4 +75,44 @@ describe('UserController', function () {
                 })
         })
     })
+
+    describe(`PUT ${baseUri}/${testData.existingUser._id}`, function () {
+        it('should modify user by id', function (done) {
+            request(app)
+                /* .put(`${baseUri}/${testData.existingUser._id}`) */
+                .put(`${baseUri}/${testData.existingUser._id}`)
+                .send({ username: 'otto', city: 'Bielefeld' })
+                .end(function (err, res) {
+                    expect(res.status).to.equal(200)
+                    expect(res.body).to.not.equal({})
+                    expect(res.body._id).to.not.equal(undefined)
+                    expect(res.body.fname).to.equal(
+                        UserFixture.createdUser.fname,
+                    )
+                    expect(res.body.username).to.equal('otto')
+                    expect(res.body.profile).to.be.a('object')
+                    expect(res.body.profile.city).to.equal('Bielefeld')
+                    expect(res.body.accommodation).to.be.a('object')
+
+                    done()
+                })
+        })
+    })
+
+    describe(`DELETE ${baseUri}/${testData.existingUser._id}`, function () {
+        it('should delete user by id', function (done) {
+            request(app)
+                .delete(`${baseUri}/${testData.existingUser._id}`)
+                .end(function (err, res) {
+                    expect(res.status).to.equal(200)
+                    expect(res.body).to.not.equal(undefined)
+                    expect(res.body).to.be.a('object')
+                    expect(res.body.profile).to.be.a('object')
+                    expect(res.body.accommodation).to.be.a('object')
+                    expect(res.body._id).to.equal(testData.existingUser._id)
+
+                    done()
+                })
+        })
+    })
 })
