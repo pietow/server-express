@@ -21,7 +21,7 @@
         country: String,
         birthdate: Date,
         user: { type: Schema.Types.ObjectId, ref: 'User' },
-    })
+    }, opts)
 
     module.exports = mongoose.model('Profile', ProfileSchema)
 })()
