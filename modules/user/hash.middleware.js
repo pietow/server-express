@@ -10,6 +10,11 @@
     const PasswordService = require('../../helpers/password.helper')
 
     function getHash(req, res, next) {
+        console.log(req.method)
+        if (req.method === 'PUT') {
+            delete req.body.password
+            return next()
+        } 
         if (req.body.hasOwnProperty('password')) {
             PasswordService.hash(req.body.password)
                 .then((hash) => {
