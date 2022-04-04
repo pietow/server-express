@@ -4,13 +4,13 @@
     'use strict'
 
     module.exports = {
-        findCapacity: findCapacity,
+        findAccommodation: findAccommodation,
     }
 
-    const CapacityModel = require('./capacity.model')
+    const AccommodationModel = require('./accommodation.model')
 
-    function findCapacity(req, res, next) {
-        CapacityModel.find({ user: req.params.profileId })
+    function findAccommodation(req, res, next) {
+        AccommodationModel.find({ user: req.params.profileId })
             .then((data) => {
                 req.response = data
                 next()

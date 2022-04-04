@@ -10,7 +10,7 @@ const MongoDBUtil = require('./modules/mongodb/mongodb.module').MongoDBUtil
 const UserController = require('./modules/user/user.module')().UserController
 const ProfileController = require('./modules/profile/profile.module')()
     .ProfileController
-const CapacityController = require('./modules/capacity/capacity.controller')
+const AccommodationController = require('./modules/accommodation/accommodation.controller')
 
 const path = require('path')
 const app = express()
@@ -25,7 +25,7 @@ MongoDBUtil.init()
 app.use('/api/', cors())
 app.use('/api/users', UserController)
 app.use('/api/profile', ProfileController)
-/* app.use('/api/capacity', CapacityController) */
+/* app.use('/api/accomodation', AccomodationController) */
 
 app.get('/', (req, res) => {
     const pkg = require(path.join(__dirname, 'package.json'))
