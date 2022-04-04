@@ -3,11 +3,13 @@
     'use strict'
 
     const express = require('express')
+    const parallel = require('parallel-express-middleware')
     const router = express.Router()
 
     const Module = require('./user.module')()
     const ProfileModule = require('../profile/profile.module')()
-    const AccommodationModule = require('../accommodation/accommodation.module')()
+    const AccommodationModule =
+        require('../accommodation/accommodation.module')()
     const UserMiddleware = Module.UserMiddleware
     const ProfileMiddleware = ProfileModule.ProfileMiddleware
     const AccommodationMiddleware = AccommodationModule.AccommodationMiddleware
@@ -44,8 +46,10 @@
         '/:userId',
         HashMiddleware.getHash,
         UserMiddleware.modifyUser,
-        ProfileMiddleware.modifyProfile,
-        AccommodationMiddleware.modifyAccommodation,
+        parallel(
+            ProfileMiddleware.modifyProfile,
+            AccommodationMiddleware.modifyAccommodation,
+        ),
         (req, res) => {
             res.status(200).json(req.response)
         },
