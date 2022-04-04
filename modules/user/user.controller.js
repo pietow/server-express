@@ -7,15 +7,17 @@
 
     const Module = require('./user.module')()
     const ProfileModule = require('../profile/profile.module')()
+    const AccommodationModule = require('../accommodation/accommodation.module')()
     const UserMiddleware = Module.UserMiddleware
     const ProfileMiddleware = ProfileModule.ProfileMiddleware
+    const AccommodationMiddleware = AccommodationModule.AccommodationMiddleware
     const HashMiddleware = Module.HashMiddleware
 
     router.post(
         '/',
         HashMiddleware.getHash,
         UserMiddleware.addUser,
-        ProfileMiddleware.addProfile,
+        /* ProfileMiddleware.addProfile, */
         UserMiddleware.sendConfirmationMail,
         (req, res) => {
             res.status(201).json(req.response)
@@ -43,6 +45,7 @@
         HashMiddleware.getHash,
         UserMiddleware.modifyUser,
         ProfileMiddleware.modifyProfile,
+        AccommodationMiddleware.modifyAccommodation,
         (req, res) => {
             res.status(200).json(req.response)
         },

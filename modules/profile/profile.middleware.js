@@ -37,7 +37,6 @@
     function modifyProfile(req, res, next) {
         ProfileService.updateProfileByUserId(req.params.userId, req.body)
             .then((data) => {
-                req.response = req.response.toObject()
                 req.response.profile = data
                 next()
             })

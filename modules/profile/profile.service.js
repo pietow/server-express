@@ -19,6 +19,8 @@
     }
 
     function updateProfileByUserId(userId, profile) {
-        return ProfileModel.findOneAndUpdate({ user: userId }, profile)
+        return ProfileModel.findOneAndUpdate({ user: userId }, profile, {
+            new: true,
+        }).exec()
     }
 })()
