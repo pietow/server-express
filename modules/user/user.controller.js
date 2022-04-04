@@ -15,7 +15,7 @@
         '/',
         HashMiddleware.getHash,
         UserMiddleware.addUser,
-        ProfileMiddleware.addProfile,
+        /* ProfileMiddleware.addProfile, */
         UserMiddleware.sendConfirmationMail,
         (req, res) => {
             res.status(201).json(req.response)
