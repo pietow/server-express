@@ -5,6 +5,7 @@
 
     module.exports = {
         getAccommodationByUserId: getAccommodationByUserId,
+        modifyAccommodation: modifyAccommodation,
     }
 
     const AccommodationService = require('./accommodation.module')()
@@ -17,5 +18,19 @@
                 next()
             })
             .catch((err) => next(err))
+    }
+
+    function modifyAccommodation(req, res, next) {
+        AccommodationService.updateAccommodationByUserId(
+            req.params.userId,
+            req.body,
+        )
+            .then((data) => {
+                req.response.accommodation = data
+                next()
+            })
+            .catch((err) => {
+                next(err)
+            })
     }
 })()
