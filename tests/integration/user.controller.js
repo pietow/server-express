@@ -21,6 +21,7 @@ const testData = {
     existingUser: {},
     token: '',
 }
+//TODO: login route test; reuse token in header
 
 describe('UserController', function () {
     describe(`POST ${baseUri}`, function () {
