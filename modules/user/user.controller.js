@@ -7,31 +7,35 @@
 
     const Module = require('./user.module')()
     const ProfileModule = require('../profile/profile.module')()
-    const AccommodationModule = require('../accommodation/accommodation.module')()
+    const AccommodationModule =
+        require('../accommodation/accommodation.module')()
     const UserMiddleware = Module.UserMiddleware
     const ProfileMiddleware = ProfileModule.ProfileMiddleware
     const AccommodationMiddleware = AccommodationModule.AccommodationMiddleware
     const HashMiddleware = Module.HashMiddleware
 
+    //REGISTRATION
     router.post(
         '/',
         HashMiddleware.getHash,
         UserMiddleware.addUser,
-        /* ProfileMiddleware.addProfile, */
         UserMiddleware.sendConfirmationMail,
         (req, res) => {
             res.status(201).json(req.response)
         },
     )
 
+    //LIST OF USERS
     router.get('/', UserMiddleware.getUsers, (req, res) => {
         res.status(200).json(req.response)
     })
 
+    //ONE USER
     router.get('/:userId', UserMiddleware.getUserById, (req, res) => {
         res.status(200).json(req.response)
     })
 
+    //ONE PROFILE
     router.get(
         '/:userId/profile',
         ProfileMiddleware.getProfileByUserId,
@@ -40,9 +44,10 @@
         },
     )
 
+    //MODIFY USER
     router.put(
         '/:userId',
-        HashMiddleware.getHash,
+        HashMiddleware.ignorePassword,
         UserMiddleware.modifyUser,
         ProfileMiddleware.modifyProfile,
         AccommodationMiddleware.modifyAccommodation,
@@ -51,10 +56,12 @@
         },
     )
 
+    //DELETE USER
     router.delete('/:userId', UserMiddleware.removeUser, (req, res) => {
         res.status(200).json(req.response)
     })
 
+    //LOGIN
     router.post(
         '/login',
         UserMiddleware.getUserByUserName,
@@ -64,6 +71,7 @@
         },
     )
 
+    //VERIFY USER VIA EMAIL
     router.get(
         '/:userId/confirm',
         UserMiddleware.setActive,
