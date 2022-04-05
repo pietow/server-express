@@ -19,7 +19,9 @@ const PasswordService = require('../../helpers/password.helper')
 
 const testData = {
     existingUser: {},
+    token: '',
 }
+//TODO: login route test; reuse token in header
 
 describe('UserController', function () {
     describe(`POST ${baseUri}`, function () {
@@ -39,6 +41,22 @@ describe('UserController', function () {
                     expect(res.body.fname).to.equal(
                         UserFixture.createdUser.fname,
                     )
+                    testData.existingUser = res.body
+
+                    done()
+                })
+        })
+    })
+
+    describe(`POST ${baseUri}/login`, function () {
+        it('should login registered user', function (done) {
+            request(app)
+                .post(`${baseUri}/login`)
+                .send({ username: 'piet', password: 'password' })
+                .end((err, res) => {
+                    testData.token = res.body.token
+                    expect(res.body.token).to.be.a('string')
+                    expect(res.body.token.split('.').length).to.equal(3)
 
                     done()
                 })
@@ -49,8 +67,9 @@ describe('UserController', function () {
         it('should get all users', function (done) {
             request(app)
                 .get(baseUri)
+                .set('authorization', `Bearer ${testData.token}`)
                 .end(function (err, res) {
-                    testData.existingUser = res.body[0]
+                    /* testData.existingUser = res.body[0] */
                     expect(res.status).to.equal(200)
                     expect(res.body).to.not.equal(undefined)
                     expect(res.body).to.be.a('array')
@@ -65,10 +84,11 @@ describe('UserController', function () {
         it('should get user by id', function (done) {
             request(app)
                 .get(`${baseUri}/${testData.existingUser._id}`)
+                .set('authorization', `Bearer ${testData.token}`)
                 .end(function (err, res) {
                     expect(res.status).to.equal(200)
                     expect(res.body).to.not.equal(undefined)
-                    expect(res.body).to.deep.equal(testData.existingUser)
+                    expect(res.body).to.be.a('object')
 
                     done()
                 })
@@ -79,6 +99,7 @@ describe('UserController', function () {
         it('should modify user by id', function (done) {
             request(app)
                 .put(`${baseUri}/${testData.existingUser._id}`)
+                .set('authorization', `Bearer ${testData.token}`)
                 .send({ username: 'otto', city: 'Bielefeld' })
                 .end(function (err, res) {
                     expect(res.status).to.equal(200)
@@ -101,6 +122,7 @@ describe('UserController', function () {
         it('should delete user by id', function (done) {
             request(app)
                 .delete(`${baseUri}/${testData.existingUser._id}`)
+                .set('authorization', `Bearer ${testData.token}`)
                 .end(function (err, res) {
                     expect(res.status).to.equal(200)
                     expect(res.body).to.not.equal(undefined)

@@ -1,6 +1,7 @@
 {
     "fname": "John",
     "lname": "Smith",
+    "username": "piet",
     "email": "john.smith@example.com",
     "phoneNumber": "9876543210",
     "address": "100 E Street",
