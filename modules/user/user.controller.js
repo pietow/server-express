@@ -7,7 +7,8 @@
 
     const Module = require('./user.module')()
     const ProfileModule = require('../profile/profile.module')()
-    const AccommodationModule = require('../accommodation/accommodation.module')()
+    const AccommodationModule =
+        require('../accommodation/accommodation.module')()
     const UserMiddleware = Module.UserMiddleware
     const ProfileMiddleware = ProfileModule.ProfileMiddleware
     const AccommodationMiddleware = AccommodationModule.AccommodationMiddleware
@@ -67,6 +68,13 @@
     router.get(
         '/:userId/confirm',
         UserMiddleware.setActive,
+        UserMiddleware.modifyUser,
+        (req, res) => {
+            res.status(201).json(req.response)
+        },
+    )
+    router.put(
+        '/:userId/:password/reset', // include old password in params to secure this link
         UserMiddleware.modifyUser,
         (req, res) => {
             res.status(201).json(req.response)
