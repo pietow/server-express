@@ -12,6 +12,8 @@
 
     const PasswordService = require('../../helpers/password.helper')
     const jwt = require('jsonwebtoken')
+    const crypto = require('crypto')
+    let accessTokenSecret
 
     function getHash(req, res, next) {
         if (req.body.hasOwnProperty('password')) {
@@ -45,11 +47,12 @@
     }
 
     function signJWT(req, res, next) {
-        const accessTokenSecret = process.env.SECRETJWT
+        accessTokenSecret = crypto.randomBytes(256).toString('base64')
         if (req.isValid) {
             const accessToken = jwt.sign(
                 { username: req.response.username },
                 accessTokenSecret,
+                { expiresIn: '20m' },
             )
             req.response.token = accessToken
             next()
@@ -61,7 +64,6 @@
     }
 
     function authenticateJWT(req, res, next) {
-        const accessTokenSecret = process.env.SECRETJWT
         const authHeader = req.headers.authorization
 
         if (authHeader) {

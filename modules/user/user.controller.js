@@ -25,10 +25,24 @@
         },
     )
 
+    //LOGIN
+    router.post(
+        '/login',
+        UserMiddleware.getUserByUserName,
+        HashMiddleware.compareHash,
+        HashMiddleware.signJWT,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
+
+    //AUTHENTICATION OF ALL SUBSEQUENT ROUTES
+    router.use(HashMiddleware.authenticateJWT)
+
     //LIST OF USERS
     router.get(
         '/',
-        HashMiddleware.authenticateJWT,
+        /* HashMiddleware.authenticateJWT, */
         UserMiddleware.getUsers,
         (req, res) => {
             res.status(200).json(req.response)
@@ -65,17 +79,6 @@
     router.delete('/:userId', UserMiddleware.removeUser, (req, res) => {
         res.status(200).json(req.response)
     })
-
-    //LOGIN
-    router.post(
-        '/login',
-        UserMiddleware.getUserByUserName,
-        HashMiddleware.compareHash,
-        HashMiddleware.signJWT,
-        (req, res) => {
-            res.status(200).json(req.response)
-        },
-    )
 
     //VERIFY USER VIA EMAIL
     router.get(
