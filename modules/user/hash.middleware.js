@@ -5,16 +5,12 @@
     module.exports = {
         getHash: getHash,
         compareHash: compareHash,
+        ignorePassword: ignorePassword,
     }
 
     const PasswordService = require('../../helpers/password.helper')
 
     function getHash(req, res, next) {
-        console.log(req.method)
-        if (req.method === 'PUT') {
-            delete req.body.password
-            return next()
-        } 
         if (req.body.hasOwnProperty('password')) {
             PasswordService.hash(req.body.password)
                 .then((hash) => {
@@ -26,6 +22,7 @@
             throw new Error('Password required')
         }
     }
+
     function compareHash(req, res, next) {
         PasswordService.compare(req.body.password, req.response.password)
             .then((isValid) => {
@@ -36,5 +33,10 @@
                 }
             })
             .catch((err) => next(err))
+    }
+
+    function ignorePassword(req, res, next) {
+        if (req.body.password) delete req.body.password
+        next()
     }
 })()
