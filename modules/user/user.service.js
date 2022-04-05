@@ -26,7 +26,7 @@
     }
 
     function fetchUserByUserName(username) {
-        return UserModel.findOne({ username: username.username }).exec()
+        return UserModel.findOne({ username: username.username }).lean()
     }
 
     function updateUser(userId, user) {

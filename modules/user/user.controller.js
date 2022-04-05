@@ -26,9 +26,14 @@
     )
 
     //LIST OF USERS
-    router.get('/', UserMiddleware.getUsers, (req, res) => {
-        res.status(200).json(req.response)
-    })
+    router.get(
+        '/',
+        HashMiddleware.authenticateJWT,
+        UserMiddleware.getUsers,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
 
     //ONE USER
     router.get('/:userId', UserMiddleware.getUserById, (req, res) => {
@@ -66,6 +71,7 @@
         '/login',
         UserMiddleware.getUserByUserName,
         HashMiddleware.compareHash,
+        HashMiddleware.signJWT,
         (req, res) => {
             res.status(200).json(req.response)
         },
