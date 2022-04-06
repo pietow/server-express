@@ -11,6 +11,7 @@
     }
 
     const PasswordService = require('../../helpers/password.helper')
+    const jwtService = require('../../helpers/jwt.util')
     const jwt = require('jsonwebtoken')
     const crypto = require('crypto')
     let accessTokenSecret
@@ -32,7 +33,7 @@
         PasswordService.compare(req.body.password, req.response.password)
             .then((isValid) => {
                 if (!isValid) {
-                    throw new Error('Access denied!')
+                    res.send('Access denied!')
                 } else {
                     req.isValid = isValid
                     next()
@@ -47,13 +48,10 @@
     }
 
     function signJWT(req, res, next) {
-        accessTokenSecret = crypto.randomBytes(256).toString('base64')
         if (req.isValid) {
-            const accessToken = jwt.sign(
-                { username: req.response.username },
-                accessTokenSecret,
-                { expiresIn: '20m' },
-            )
+            const accessToken = jwtService.signToken({
+                username: req.response.username,
+            })
             req.response.token = accessToken
             next()
         } else {
@@ -69,12 +67,12 @@
         if (authHeader) {
             const token = authHeader.split(' ')[1]
 
-            jwt.verify(token, accessTokenSecret, (err, user) => {
-                if (err) {
-                    return next(err)
-                }
-                next()
-            })
+            jwtService
+                .verifyToken(token)
+                .then((data) => {
+                    next()
+                })
+                .catch((err) => next(err))
         } else {
             throw Error('No authHeader')
         }
