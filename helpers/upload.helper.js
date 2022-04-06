@@ -18,7 +18,7 @@ const storage = new GridFsStorage({
                 const fileInfo = {
                     filename: filename,
                     bucketName: 'profilePhotos',
-                    metadata: { profileId: req.params.userId },
+                    metadata: { userId: req.params.userId },
                 }
                 req.response = fileInfo
                 resolve(req.response)
@@ -28,8 +28,9 @@ const storage = new GridFsStorage({
         })
     },
 })
-const upload = multer({ storage: storage })
+const upload = multer({ storage: storage, limits: { filesize: 6000000 } }) // maximum 6 MB
 
 module.exports = {
     upload: upload,
+    storage: storage,
 }

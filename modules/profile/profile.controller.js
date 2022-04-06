@@ -29,8 +29,16 @@
         '/:userId/photo',
         upload.single('file'),
         ProfileMiddleware.addProfilePhoto,
-        (req, res, next) => {
+        (req, res) => {
             res.status(201).json(req.response)
+        },
+    )
+
+    router.get(
+        '/:userId/photo',
+        ProfileMiddleware.getProfilePhoto,
+        (req, res, next) => {
+            next()
         },
     )
 
