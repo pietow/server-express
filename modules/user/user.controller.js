@@ -36,6 +36,28 @@
         },
     )
 
+    //VERIFY USER VIA EMAIL
+    router.get(
+        '/:userId/confirm',
+        UserMiddleware.setActive,
+        UserMiddleware.modifyUser,
+        (req, res) => {
+            res.status(201).json(req.response)
+        },
+    )
+
+    //RESET USER'S PASSWORD
+    router.put(
+        '/:userId/:password/reset', // include old password in params to secure this link
+        UserMiddleware.getUserById,
+        HashMiddleware.checkHashParam,
+        HashMiddleware.getHash,
+        UserMiddleware.modifyUser,
+        (req, res) => {
+            res.status(201).json(req.response)
+        },
+    )
+
     //AUTHENTICATION OF ALL SUBSEQUENT ROUTES
     router.use(HashMiddleware.authenticateJWT)
 
@@ -79,23 +101,6 @@
     router.delete('/:userId', UserMiddleware.removeUser, (req, res) => {
         res.status(200).json(req.response)
     })
-
-    //VERIFY USER VIA EMAIL
-    router.get(
-        '/:userId/confirm',
-        UserMiddleware.setActive,
-        UserMiddleware.modifyUser,
-        (req, res) => {
-            res.status(201).json(req.response)
-        },
-    )
-    router.put(
-        '/:userId/:password/reset', // include old password in params to secure this link
-        UserMiddleware.modifyUser,
-        (req, res) => {
-            res.status(201).json(req.response)
-        },
-    )
 
     module.exports = router
 })()

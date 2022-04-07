@@ -97,7 +97,7 @@
                 //check if valid image
                 if (
                     files[0].contentType === 'image/jpeg' ||
-                    files[0].contentType === 'img/png'
+                    files[0].contentType === 'image/png'
                 ) {
                     //read output to browser
                     //to display the profile photo in the frontend just use:

@@ -8,6 +8,7 @@
         ignorePassword: ignorePassword,
         signJWT: signJWT,
         authenticateJWT: authenticateJWT,
+        checkHashParam: checkHashParam,
     }
 
     const PasswordService = require('../../helpers/password.helper')
@@ -76,5 +77,10 @@
         } else {
             throw Error('No authHeader')
         }
+    }
+
+    function checkHashParam(req, res, next) {
+        if (req.response.password === req.params.password) return next()
+        throw new Error('wrong hash')
     }
 })()
