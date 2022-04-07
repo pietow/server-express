@@ -10,6 +10,7 @@
         setActive: setActive,
         getUserByUserName: getUserByUserName,
         sendConfirmationMail: sendConfirmationMail,
+        sendResetPasswordMail: sendResetPasswordMail,
         modifyUser: modifyUser,
         removeUser: removeUser,
     }
@@ -64,14 +65,31 @@
     }
 
     function sendConfirmationMail(req, res, next) {
-        MailerHelper.sendConfirmationMail(
+        MailerHelper.sendMail(
             req.response.fname,
             req.response.lname,
             req.response.email,
             req.response._id,
+            'confirmUser',
         )
-            .then((data) => {
-                console.log('SENDMAIL')
+            .then(() => {
+                next()
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
+
+    function sendResetPasswordMail(req, res, next) {
+        MailerHelper.sendMail(
+            req.response.fname,
+            req.response.lname,
+            req.response.email,
+            req.response._id,
+            'resetPassword',
+            req.response.password,
+        )
+            .then(() => {
                 next()
             })
             .catch((err) => next(err))

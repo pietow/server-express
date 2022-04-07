@@ -2,16 +2,18 @@
 ;(function () {
     'use strict'
 
-    module.exports = { init: init }
+    const connectionString = `mongodb+srv://${process.env.DBUSER}:${process.env.PASSWORD}@cluster0.9dfvi.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority`
+
+    module.exports = { init: init, connectionString: connectionString }
 
     const mongoose = require('mongoose')
+    const Grid = require('gridfs-stream')
     require('dotenv').config()
 
     function init() {
         const options = {
             useNewUrlParser: true,
         }
-        const connectionString = `mongodb+srv://${process.env.DBUSER}:${process.env.PASSWORD}@cluster0.9dfvi.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority`
         mongoose
             .connect(connectionString, options)
             .then((result) => {

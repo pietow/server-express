@@ -89,6 +89,13 @@
             res.status(201).json(req.response)
         },
     )
+    router.put(
+        '/:userId/:password/reset', // include old password in params to secure this link
+        UserMiddleware.modifyUser,
+        (req, res) => {
+            res.status(201).json(req.response)
+        },
+    )
 
     module.exports = router
 })()
