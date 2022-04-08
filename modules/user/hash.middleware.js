@@ -13,8 +13,7 @@
 
     const PasswordService = require('../../helpers/password.helper')
     const jwtService = require('../../helpers/jwt.util')
-    const jwt = require('jsonwebtoken')
-    const crypto = require('crypto')
+    const { uuid } = require('uuidv4')
     let accessTokenSecret
 
     function getHash(req, res, next) {
@@ -52,8 +51,14 @@
         if (req.isValid) {
             const accessToken = jwtService.signToken({
                 username: req.response.username,
+                jwitid: uuid(),
             })
             req.response.token = accessToken
+            res.cookie('JWT', accessToken, {
+                maxAge: 60 * 60,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+            })
             next()
         } else {
             throw new Error(
@@ -63,19 +68,23 @@
     }
 
     function authenticateJWT(req, res, next) {
-        const authHeader = req.headers.authorization
-
-        if (authHeader) {
-            const token = authHeader.split(' ')[1]
-
+        const cookies = req.headers.cookie
+        if (cookies) {
+            const JWTcookie = cookies
+                .split('; ')
+                .find((str) => str.includes('JWT='))
+            const token = JWTcookie.split('=').pop()
             jwtService
                 .verifyToken(token)
                 .then((data) => {
-                    next()
+                    return next()
                 })
-                .catch((err) => next(err))
+                .catch((err) => {
+                    if (err.message === 'jwt expired') res.send(err.message)
+                    next(err)
+                })
         } else {
-            throw Error('No authHeader')
+            throw Error('No cookie')
         }
     }
 

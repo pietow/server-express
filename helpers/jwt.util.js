@@ -11,10 +11,10 @@
     const jwt = require('jsonwebtoken')
     const crypto = require('crypto')
 
-    let accessTokenSecret
+    const accessTokenSecret = process.env.SECRETJWT
+    const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
 
     function signToken(payload) {
-        accessTokenSecret = crypto.randomBytes(256).toString('base64')
         return jwt.sign(payload, accessTokenSecret, { expiresIn: '20m' })
     }
 
