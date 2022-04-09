@@ -21,6 +21,29 @@ app.use(express.json())
 
 //establish connection to MongoDB
 MongoDBUtil.init()
+const redis = require('ioredis')
+
+const credentials = {
+    host: process.env.REDIS_HOSTNAME,
+    port: process.env.REDIS_PORT,
+    password: process.env.REDIS_PASSWORD,
+    url: `${this.host}:${this.port}`,
+}
+const redisClient = redis.createClient(credentials)
+redisClient.on('connect', () => {
+    console.log('connected to redis successfully!')
+})
+
+redisClient.set('mykey', 'blaaaa')
+redisClient.set('mykey2', 'blaaaa2')
+// Or ioredis returns a promise if the last argument isn't a function
+redisClient.get('mykey').then((result) => {
+    console.log(result) // Prints "value"
+})
+
+redisClient.on('error', (error) => {
+    console.log('Redis connection error :', error)
+})
 
 app.use('/api/', cors())
 app.use('/api/users', UserController)
