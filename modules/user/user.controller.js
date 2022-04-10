@@ -25,6 +25,11 @@
         },
     )
 
+    //LOGOUT
+    router.post('/logout', HashMiddleware.logout, (req, res) => {
+        res.status(200).json(req.response)
+    })
+
     //LOGIN
     router.post(
         '/login',

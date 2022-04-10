@@ -7,6 +7,7 @@
     module.exports = {
         init: init,
         redisPromise: redisPromise,
+        redisDeleteOneByKey: redisDeleteOneByKey,
     }
 
     const redis = require('ioredis')
@@ -32,6 +33,12 @@
     function redisPromise() {
         return new Promise((resolve, reject) => {
             if (redisClient) resolve(redisClient)
+        })
+    }
+
+    function redisDeleteOneByKey(key) {
+        return redisPromise().then((redisClient) => {
+            return redisClient.del(key)
         })
     }
 })()

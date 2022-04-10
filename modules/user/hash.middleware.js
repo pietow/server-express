@@ -10,6 +10,7 @@
         setTokenInRedis: setTokenInRedis,
         authenticateJWT: authenticateJWT,
         generateAccessToken: generateAccessToken,
+        logout: logout,
         checkHashParam: checkHashParam,
     }
 
@@ -63,7 +64,7 @@
         const jwtid = jwt_decode(refreshToken).jwtid
 
         RedisUtil.redisPromise().then((redisClient) => {
-            redisClient.set(jwtid, req.response.username)
+            redisClient.set(jwtid, req.body.username)
         })
         next()
     }
@@ -116,6 +117,23 @@
         } else {
             throw Error('No authHeader')
         }
+    }
+
+    function logout(req, res, next) {
+        const authHeader = req.headers.authorization
+        const token = authHeader.split(' ')[1]
+        Promise.any(jwtService.verifyTokens(token))
+            .then((claim) => {
+                RedisUtil.redisDeleteOneByKey(claim.jwtid)
+                    .then((bool) => bool === 1)
+                    .then((bool) => {
+                        req.response = bool
+                            ? `token ${claim.jwtid} deleted`
+                            : `token ${claim.jwtid} not found`
+                        next()
+                    })
+            })
+            .catch((err) => next(err))
     }
 
     function checkHashParam(req, res, next) {
