@@ -114,8 +114,6 @@
     }
 
     function modifyUser(req, res, next) {
-        console.log(req.body)
-        console.log(req.params.userId)
         UserService.updateUser(req.params.userId, req.body)
             .then((data) => {
                 req.response = data

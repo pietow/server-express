@@ -31,6 +31,18 @@
         UserMiddleware.getUserByUserName,
         HashMiddleware.compareHash,
         HashMiddleware.signJWT,
+        HashMiddleware.setTokenInRedis,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
+
+    //GENERATE NEW ACCESSTOKEN AND REFRESHTOKEN
+    router.post(
+        '/generateToken',
+        HashMiddleware.generateAccessToken,
+        HashMiddleware.signJWT,
+        HashMiddleware.setTokenInRedis,
         (req, res) => {
             res.status(200).json(req.response)
         },

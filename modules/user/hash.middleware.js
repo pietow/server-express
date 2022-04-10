@@ -7,15 +7,18 @@
         compareHash: compareHash,
         ignorePassword: ignorePassword,
         signJWT: signJWT,
+        setTokenInRedis: setTokenInRedis,
         authenticateJWT: authenticateJWT,
+        generateAccessToken: generateAccessToken,
         checkHashParam: checkHashParam,
     }
 
     const PasswordService = require('../../helpers/password.helper')
     const jwtService = require('../../helpers/jwt.util')
     const jwt = require('jsonwebtoken')
+    const jwt_decode = require('jwt-decode')
     const crypto = require('crypto')
-    let accessTokenSecret
+    const RedisUtil = require('../redis/redis.module').RedisUtil
 
     function getHash(req, res, next) {
         if (req.body.hasOwnProperty('password')) {
@@ -49,17 +52,20 @@
     }
 
     function signJWT(req, res, next) {
-        if (req.isValid) {
-            const accessToken = jwtService.signToken({
-                username: req.response.username,
-            })
-            req.response.token = accessToken
-            next()
-        } else {
-            throw new Error(
-                'Please include validation middleware: HashMiddleware.compareHash',
-            )
-        }
+        const [accessToken, refreshToken] = jwtService.signTokens()
+        req.response.token = accessToken
+        req.response.refreshToken = refreshToken
+        next()
+    }
+
+    function setTokenInRedis(req, res, next) {
+        const refreshToken = req.response.refreshToken
+        const jwtid = jwt_decode(refreshToken).jwtid
+
+        RedisUtil.redisPromise().then((redisClient) => {
+            redisClient.set(jwtid, req.response.username)
+        })
+        next()
     }
 
     function authenticateJWT(req, res, next) {
@@ -68,10 +74,43 @@
         if (authHeader) {
             const token = authHeader.split(' ')[1]
 
-            jwtService
-                .verifyToken(token)
-                .then((data) => {
+            Promise.any(jwtService.verifyTokens(token))
+                .then((claim) => {
+                    console.log(claim)
                     next()
+                })
+                .catch((err) => next(err))
+        } else {
+            throw Error('No authHeader')
+        }
+    }
+
+    function generateAccessToken(req, res, next) {
+        const authHeader = req.headers.authorization
+
+        if (authHeader) {
+            const token = authHeader.split(' ')[1]
+            Promise.any(jwtService.verifyTokens(token))
+                .then((claim) => {
+                    console.log(claim.jwtid)
+                    RedisUtil.redisPromise().then((redisClient) => {
+                        redisClient
+                            .exists(claim.jwtid)
+                            .then((bool) => {
+                                return bool === 1
+                            })
+                            .then((exists) => {
+                                console.log(exists)
+                                if (exists) {
+                                    req.response = { exists: exists }
+                                    redisClient.del(claim.jwtid)
+                                    next()
+                                } else {
+                                    throw new Error('Token not in DB')
+                                }
+                            })
+                            .catch((err) => next(err))
+                    })
                 })
                 .catch((err) => next(err))
         } else {
