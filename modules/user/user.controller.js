@@ -13,11 +13,12 @@
     const ProfileMiddleware = ProfileModule.ProfileMiddleware
     const AccommodationMiddleware = AccommodationModule.AccommodationMiddleware
     const HashMiddleware = Module.HashMiddleware
+    const PassMiddleware = Module.PassMiddleware
 
     //REGISTRATION
     router.post(
         '/',
-        HashMiddleware.getHash,
+        PassMiddleware.getHash,
         UserMiddleware.addUser,
         UserMiddleware.sendConfirmationMail,
         (req, res) => {
@@ -34,7 +35,7 @@
     router.post(
         '/login',
         UserMiddleware.getUserByUserName,
-        HashMiddleware.compareHash,
+        PassMiddleware.compareHash,
         HashMiddleware.signJWT,
         HashMiddleware.setTokenInRedis,
         (req, res) => {
@@ -105,7 +106,7 @@
     //MODIFY USER
     router.put(
         '/:userId',
-        HashMiddleware.ignorePassword,
+        PassMiddleware.ignorePassword,
         UserMiddleware.modifyUser,
         ProfileMiddleware.modifyProfile,
         AccommodationMiddleware.modifyAccommodation,
