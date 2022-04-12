@@ -12,7 +12,7 @@
     const UserMiddleware = Module.UserMiddleware
     const ProfileMiddleware = ProfileModule.ProfileMiddleware
     const AccommodationMiddleware = AccommodationModule.AccommodationMiddleware
-    const HashMiddleware = Module.HashMiddleware
+    const JWT_Middleware = Module.JWT_Middleware
     const PassMiddleware = Module.PassMiddleware
 
     //REGISTRATION
@@ -27,7 +27,7 @@
     )
 
     //LOGOUT
-    router.post('/logout', HashMiddleware.logout, (req, res) => {
+    router.post('/logout', JWT_Middleware.logout, (req, res) => {
         res.status(200).json(req.response)
     })
 
@@ -36,8 +36,8 @@
         '/login',
         UserMiddleware.getUserByUserName,
         PassMiddleware.compareHash,
-        HashMiddleware.signJWT,
-        HashMiddleware.setTokenInRedis,
+        JWT_Middleware.signJWT,
+        JWT_Middleware.setTokenInRedis,
         (req, res) => {
             res.status(200).json(req.response)
         },
@@ -46,9 +46,9 @@
     //GENERATE NEW ACCESSTOKEN AND REFRESHTOKEN
     router.post(
         '/generateToken',
-        HashMiddleware.generateAccessToken,
-        HashMiddleware.signJWT,
-        HashMiddleware.setTokenInRedis,
+        JWT_Middleware.generateAccessToken,
+        JWT_Middleware.signJWT,
+        JWT_Middleware.setTokenInRedis,
         (req, res) => {
             res.status(200).json(req.response)
         },
@@ -68,7 +68,7 @@
     router.put(
         '/:userId/:password/reset', // include old password in params to secure this link
         UserMiddleware.getUserById,
-        HashMiddleware.checkHashParam,
+        JWT_Middleware.checkHashParam,
         PassMiddleware.getHash,
         UserMiddleware.modifyUser,
         (req, res) => {
@@ -77,12 +77,11 @@
     )
 
     //AUTHENTICATION OF ALL SUBSEQUENT ROUTES
-    router.use(HashMiddleware.authenticateJWT)
+    router.use(JWT_Middleware.authenticateJWT)
 
     //LIST OF USERS
     router.get(
         '/',
-        /* HashMiddleware.authenticateJWT, */
         UserMiddleware.getUsers,
         (req, res) => {
             res.status(200).json(req.response)
