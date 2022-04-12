@@ -16,7 +16,13 @@ const AccommodationController = require('./modules/accommodation/accommodation.c
 const path = require('path')
 const app = express()
 
-app.use(logger('tiny'))
+app.use(
+    logger('tiny', {
+        skip: function (req, res) {
+            return req.app.get('env') !== 'development'
+        },
+    }),
+)
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 

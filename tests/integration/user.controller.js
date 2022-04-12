@@ -22,6 +22,8 @@ const testData = {
     token: '',
 }
 
+app.set('env', 'testing')
+
 describe('UserController', function () {
     describe(`POST ${baseUri}`, function () {
         it('should add new user', function (done) {
