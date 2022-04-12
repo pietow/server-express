@@ -15,7 +15,7 @@ const Fixtures = require('../fixtures/fixtures')
 const UserFixture = Fixtures.UserFixture
 
 const baseUri = '/api/users'
-const PasswordService = require('../../helpers/password.helper')
+const PasswordService = require('../../helpers/password.util')
 
 const testData = {
     existingUser: {},

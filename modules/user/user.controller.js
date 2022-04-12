@@ -69,7 +69,7 @@
         '/:userId/:password/reset', // include old password in params to secure this link
         UserMiddleware.getUserById,
         HashMiddleware.checkHashParam,
-        HashMiddleware.getHash,
+        PassMiddleware.getHash,
         UserMiddleware.modifyUser,
         (req, res) => {
             res.status(201).json(req.response)

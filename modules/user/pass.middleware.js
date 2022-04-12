@@ -8,7 +8,7 @@
         ignorePassword: ignorePassword,
     }
 
-    const PasswordService = require('../../helpers/password.helper')
+    const PasswordService = require('../../helpers/password.util')
 
     function getHash(req, res, next) {
         if (req.body.hasOwnProperty('password')) {
