@@ -18,7 +18,6 @@
     const jwtService = require('../../helpers/jwt.util')
     const jwt = require('jsonwebtoken')
     const jwt_decode = require('jwt-decode')
-    const crypto = require('crypto')
     const RedisUtil = require('../redis/redis.module').RedisUtil
 
     function getHash(req, res, next) {
@@ -77,7 +76,6 @@
 
             Promise.any(jwtService.verifyTokens(token))
                 .then((claim) => {
-                    console.log(claim)
                     next()
                 })
                 .catch((err) => next(err))
@@ -93,7 +91,6 @@
             const token = authHeader.split(' ')[1]
             Promise.any(jwtService.verifyTokens(token))
                 .then((claim) => {
-                    console.log(claim.jwtid)
                     RedisUtil.redisPromise().then((redisClient) => {
                         redisClient
                             .exists(claim.jwtid)
@@ -101,7 +98,6 @@
                                 return bool === 1
                             })
                             .then((exists) => {
-                                console.log(exists)
                                 if (exists) {
                                     req.response = { exists: exists }
                                     redisClient.del(claim.jwtid)
@@ -127,11 +123,13 @@
                 RedisUtil.redisDeleteOneByKey(claim.jwtid)
                     .then((bool) => bool === 1)
                     .then((bool) => {
-                        req.response = bool
-                            ? `token ${claim.jwtid} deleted`
-                            : `token ${claim.jwtid} not found`
-                        next()
-                    })
+                        if (bool) {
+                            req.response = `token ${claim.jwtid} deleted`
+                            next()
+                        } else {
+                            throw new Error(`token ${claim.jwtid} not found`)
+                        }
+                    }).catch((err) => next(err))
             })
             .catch((err) => next(err))
     }
