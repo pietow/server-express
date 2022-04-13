@@ -59,6 +59,7 @@ describe('UserController', function () {
                     testData.token = res.body.token
                     testData.refreshToken = res.body.refreshToken
                     expect(res.status).to.equal(200)
+                    expect(res.body.setInRedis).to.equal('OK')
                     expect(res.body.token).to.be.a('string')
                     expect(res.body.refreshToken).to.be.a('string')
                     expect(res.body.token.split('.').length).to.equal(3)
@@ -108,20 +109,20 @@ describe('UserController', function () {
     })
 
     describe(`POST ${baseUri}/logout`, function () {
-        it('fail to delete refreshToken', function (done) {
+        it('should fail to delete refreshToken', function (done) {
             request(app)
                 .post(`${baseUri}/logout`)
                 .set('authorization', `Bearer ${testData.token}`)
                 .end((err, res) => {
                     expect(res.status).to.equal(500)
-                    /* expect(res.body).to.include('not found') */
+                    expect(res.body.error).to.include('not found')
                     done()
                 })
         })
     })
 
     describe(`POST ${baseUri}/logout`, function () {
-        it('delete refreshToken', function (done) {
+        it('should delete refreshToken', function (done) {
             request(app)
                 .post(`${baseUri}/logout`)
                 .set('authorization', `Bearer ${testData.refreshToken}`)
