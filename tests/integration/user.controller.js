@@ -87,6 +87,20 @@ describe('UserController', function () {
     })
 
     describe(`POST ${baseUri}/generateToken`, function () {
+        it('should fail to generate new access and refresh token', function (done) {
+            request(app)
+                .post(`${baseUri}/generateToken`)
+                .set('authorization', `Bearer ${testData.refreshToken + 'bla'}`)
+                .end((err, res) => {
+                    expect(res.status).to.equal(500)
+                    expect(res.body.error).to.equal('All promises were rejected')
+
+                    done()
+                })
+        })
+    })
+
+    describe(`POST ${baseUri}/generateToken`, function () {
         it('should generate new access and refresh token', function (done) {
             request(app)
                 .post(`${baseUri}/generateToken`)
