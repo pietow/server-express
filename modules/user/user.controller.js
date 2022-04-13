@@ -107,6 +107,15 @@
             res.status(200).json(req.response)
         },
     )
+     
+    //ONE ACCOMMODATION ENTITY
+    router.get(
+        '/:userId/accommodation',
+        AccommodationMiddleware.getAccommodationByUserId,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
 
     //MODIFY USER
     router.put(
