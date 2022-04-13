@@ -18,11 +18,11 @@
             /*     type: Schema.Types.ObjectId, */
             /*     default: '624ae069a91bf7b8deb12743', */
             /* }, */
-            fname: String,
-            lname: String,
-            username: String,
-            email: String,
-            password: String,
+            fname: { type: String, maxLength: 1 },
+            lname: { type: String, maxLength: 30 },
+            username: { type: String, unique: true },
+            email: { type: String, required: true },
+            password: { type: String, required: true },
             profile: { type: Schema.Types.ObjectId, ref: 'Profile' },
             accommodation: {
                 type: Schema.Types.ObjectId,
