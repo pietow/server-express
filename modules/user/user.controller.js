@@ -7,17 +7,20 @@
 
     const Module = require('./user.module')()
     const ProfileModule = require('../profile/profile.module')()
+    const TokenModule = require('../token/token.module')()
     const AccommodationModule =
         require('../accommodation/accommodation.module')()
     const UserMiddleware = Module.UserMiddleware
+    const JWT_Middleware = Module.JWT_Middleware
+    const PassMiddleware = Module.PassMiddleware
     const ProfileMiddleware = ProfileModule.ProfileMiddleware
     const AccommodationMiddleware = AccommodationModule.AccommodationMiddleware
-    const HashMiddleware = Module.HashMiddleware
+    const TokenMiddleware = TokenModule.TokenMiddleware
 
     //REGISTRATION
     router.post(
         '/',
-        HashMiddleware.getHash,
+        PassMiddleware.getHash,
         UserMiddleware.addUser,
         UserMiddleware.sendConfirmationMail,
         (req, res) => {
@@ -25,12 +28,37 @@
         },
     )
 
+    //LOGOUT
+    router.post(
+        '/logout',
+        JWT_Middleware.authenticateJWT,
+        TokenMiddleware.deleteTokenId,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
+
     //LOGIN
     router.post(
         '/login',
         UserMiddleware.getUserByUserName,
-        HashMiddleware.compareHash,
-        HashMiddleware.signJWT,
+        PassMiddleware.compareHash,
+        JWT_Middleware.signJWT,
+        JWT_Middleware.getTokenId,
+        TokenMiddleware.addTokenId,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
+
+    //GENERATE NEW ACCESSTOKEN AND REFRESHTOKEN
+    router.post(
+        '/generateToken',
+        JWT_Middleware.authenticateJWT,
+        TokenMiddleware.deleteTokenId,
+        JWT_Middleware.signJWT,
+        JWT_Middleware.getTokenId,
+        TokenMiddleware.addTokenId,
         (req, res) => {
             res.status(200).json(req.response)
         },
@@ -50,8 +78,8 @@
     router.put(
         '/:userId/:password/reset', // include old password in params to secure this link
         UserMiddleware.getUserById,
-        HashMiddleware.checkHashParam,
-        HashMiddleware.getHash,
+        JWT_Middleware.checkHashParam,
+        PassMiddleware.getHash,
         UserMiddleware.modifyUser,
         (req, res) => {
             res.status(201).json(req.response)
@@ -59,17 +87,12 @@
     )
 
     //AUTHENTICATION OF ALL SUBSEQUENT ROUTES
-    router.use(HashMiddleware.authenticateJWT)
+    router.use(JWT_Middleware.authenticateJWT)
 
     //LIST OF USERS
-    router.get(
-        '/',
-        /* HashMiddleware.authenticateJWT, */
-        UserMiddleware.getUsers,
-        (req, res) => {
-            res.status(200).json(req.response)
-        },
-    )
+    router.get('/', UserMiddleware.getUsers, (req, res) => {
+        res.status(200).json(req.response)
+    })
 
     //ONE USER
     router.get('/:userId', UserMiddleware.getUserById, (req, res) => {
@@ -88,7 +111,7 @@
     //MODIFY USER
     router.put(
         '/:userId',
-        HashMiddleware.ignorePassword,
+        PassMiddleware.ignorePassword,
         UserMiddleware.modifyUser,
         ProfileMiddleware.modifyProfile,
         AccommodationMiddleware.modifyAccommodation,

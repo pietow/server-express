@@ -7,6 +7,7 @@ require('dotenv').config()
 const cors = require('cors')
 
 const MongoDBUtil = require('./modules/mongodb/mongodb.module').MongoDBUtil
+const RedisUtil = require('./modules/redis/redis.module').RedisUtil
 const UserController = require('./modules/user/user.module')().UserController
 const ProfileController = require('./modules/profile/profile.module')()
     .ProfileController
@@ -15,12 +16,19 @@ const AccommodationController = require('./modules/accommodation/accommodation.c
 const path = require('path')
 const app = express()
 
-app.use(logger('tiny'))
+app.use(
+    logger('tiny', {
+        skip: function (req, res) {
+            return req.app.get('env') !== 'development'
+        },
+    }),
+)
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 //establish connection to MongoDB
 MongoDBUtil.init()
+RedisUtil.init()
 
 app.use('/api/', cors())
 app.use('/api/users', UserController)
@@ -43,7 +51,7 @@ app.use((req, res, next) => {
 // error handler
 app.use((err, req, res, next) => {
     //provide error only in development
-    const error = req.app.get('env') === 'development' ? err : {}
+    const error = req.app.get('env') !== 'production' ? err : {}
     //set status header
     res.status(err.status || 500)
     //render error page

@@ -3,27 +3,47 @@
 ;(function () {
     'use strict'
 
+    const accessTokenSecret = process.env.SECRETJWT
+    const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
+
     module.exports = {
-        signToken: signToken,
-        verifyToken: verifyToken,
+        signTokens: signTokens,
+        verifyTokens: verifyTokens,
     }
 
     const jwt = require('jsonwebtoken')
     const crypto = require('crypto')
+    const { v4: uuidv4 } = require('uuid')
 
-    let accessTokenSecret
-
-    function signToken(payload) {
-        accessTokenSecret = crypto.randomBytes(256).toString('base64')
-        return jwt.sign(payload, accessTokenSecret, { expiresIn: '20m' })
+    function signTokens() {
+        return [signAccessToken(), signRefreshToken()]
     }
 
-    function verifyToken(token) {
+    function signAccessToken() {
+        return jwt.sign({ dummy: 'dummy' }, accessTokenSecret, {
+            expiresIn: '15m',
+        })
+    }
+
+    function signRefreshToken() {
+        return jwt.sign({ jwtid: uuidv4() }, refreshTokenSecret, {
+            expiresIn: '1d',
+        })
+    }
+
+    function verifyTokensWrapper(token, secret) {
         return new Promise((resolve, reject) => {
-            jwt.verify(token, accessTokenSecret, (err, decode) => {
+            jwt.verify(token, secret, (err, decode) => {
                 if (err) return reject(err)
                 resolve(decode)
             })
         })
+    }
+
+    function verifyTokens(token) {
+        return [
+            verifyTokensWrapper(token, accessTokenSecret),
+            verifyTokensWrapper(token, refreshTokenSecret),
+        ]
     }
 })()

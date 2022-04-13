@@ -15,12 +15,15 @@ const Fixtures = require('../fixtures/fixtures')
 const UserFixture = Fixtures.UserFixture
 
 const baseUri = '/api/users'
-const PasswordService = require('../../helpers/password.helper')
+const PasswordService = require('../../helpers/password.util')
 
 const testData = {
     existingUser: {},
     token: '',
+    refreshToken: '',
 }
+
+app.set('env', 'testing')
 
 describe('UserController', function () {
     describe(`POST ${baseUri}`, function () {
@@ -54,8 +57,13 @@ describe('UserController', function () {
                 .send({ username: 'piet', password: 'password' })
                 .end((err, res) => {
                     testData.token = res.body.token
+                    testData.refreshToken = res.body.refreshToken
+                    expect(res.status).to.equal(200)
+                    expect(res.body.setInRedis).to.equal('OK')
                     expect(res.body.token).to.be.a('string')
+                    expect(res.body.refreshToken).to.be.a('string')
                     expect(res.body.token.split('.').length).to.equal(3)
+                    expect(res.body.refreshToken.split('.').length).to.equal(3)
 
                     done()
                 })
@@ -68,12 +76,73 @@ describe('UserController', function () {
                 .get(baseUri)
                 .set('authorization', `Bearer ${testData.token}`)
                 .end(function (err, res) {
-                    /* testData.existingUser = res.body[0] */
                     expect(res.status).to.equal(200)
                     expect(res.body).to.not.equal(undefined)
                     expect(res.body).to.be.a('array')
                     expect(res.body.length).to.not.equal(0)
 
+                    done()
+                })
+        })
+    })
+
+    describe(`POST ${baseUri}/generateToken`, function () {
+        it('should fail to generate new access and refresh token', function (done) {
+            request(app)
+                .post(`${baseUri}/generateToken`)
+                .set('authorization', `Bearer ${testData.refreshToken + 'bla'}`)
+                .end((err, res) => {
+                    expect(res.status).to.equal(500)
+                    expect(res.body.error).to.equal('All promises were rejected')
+
+                    done()
+                })
+        })
+    })
+
+    describe(`POST ${baseUri}/generateToken`, function () {
+        it('should generate new access and refresh token', function (done) {
+            request(app)
+                .post(`${baseUri}/generateToken`)
+                .set('authorization', `Bearer ${testData.refreshToken}`)
+                .end((err, res) => {
+                    expect(res.status).to.equal(200)
+                    expect(res.body.refreshToken).to.not.equal(
+                        testData.refreshToken,
+                    )
+                    testData.token = res.body.token
+                    testData.refreshToken = res.body.refreshToken
+                    expect(res.body.token).to.be.a('string')
+                    expect(res.body.refreshToken).to.be.a('string')
+                    expect(res.body.token.split('.').length).to.equal(3)
+                    expect(res.body.refreshToken.split('.').length).to.equal(3)
+
+                    done()
+                })
+        })
+    })
+
+    describe(`POST ${baseUri}/logout`, function () {
+        it('should fail to delete refreshToken', function (done) {
+            request(app)
+                .post(`${baseUri}/logout`)
+                .set('authorization', `Bearer ${testData.token}`)
+                .end((err, res) => {
+                    expect(res.status).to.equal(500)
+                    expect(res.body.error).to.include('not found')
+                    done()
+                })
+        })
+    })
+
+    describe(`POST ${baseUri}/logout`, function () {
+        it('should delete refreshToken', function (done) {
+            request(app)
+                .post(`${baseUri}/logout`)
+                .set('authorization', `Bearer ${testData.refreshToken}`)
+                .end((err, res) => {
+                    expect(res.status).to.equal(200)
+                    expect(res.body.success).to.include('deleted')
                     done()
                 })
         })
