@@ -20,6 +20,7 @@
 
     function updateProfileByUserId(userId, profile) {
         return ProfileModel.findOneAndUpdate({ user: userId }, profile, {
+            runValidators: true,
             new: true,
         }).exec()
     }
