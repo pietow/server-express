@@ -27,7 +27,7 @@
         PasswordService.compare(req.body.password, req.response.password)
             .then((isValid) => {
                 if (!isValid) {
-                    res.send('Access denied!')
+                    throw new Error('Access denied!')
                 } else {
                     req.isValid = isValid
                     next()

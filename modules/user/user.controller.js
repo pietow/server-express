@@ -7,13 +7,15 @@
 
     const Module = require('./user.module')()
     const ProfileModule = require('../profile/profile.module')()
+    const TokenModule = require('../token/token.module')()
     const AccommodationModule =
         require('../accommodation/accommodation.module')()
     const UserMiddleware = Module.UserMiddleware
-    const ProfileMiddleware = ProfileModule.ProfileMiddleware
-    const AccommodationMiddleware = AccommodationModule.AccommodationMiddleware
     const JWT_Middleware = Module.JWT_Middleware
     const PassMiddleware = Module.PassMiddleware
+    const ProfileMiddleware = ProfileModule.ProfileMiddleware
+    const AccommodationMiddleware = AccommodationModule.AccommodationMiddleware
+    const TokenMiddleware = TokenModule.TokenMiddleware
 
     //REGISTRATION
     router.post(
@@ -27,7 +29,7 @@
     )
 
     //LOGOUT
-    router.post('/logout', JWT_Middleware.logout, (req, res) => {
+    router.post('/logout', TokenMiddleware.logout, (req, res) => {
         res.status(200).json(req.response)
     })
 
@@ -37,7 +39,8 @@
         UserMiddleware.getUserByUserName,
         PassMiddleware.compareHash,
         JWT_Middleware.signJWT,
-        JWT_Middleware.setTokenInRedis,
+        JWT_Middleware.getTokenId,
+        TokenMiddleware.addTokenId,
         (req, res) => {
             res.status(200).json(req.response)
         },
@@ -48,7 +51,8 @@
         '/generateToken',
         JWT_Middleware.generateAccessToken,
         JWT_Middleware.signJWT,
-        JWT_Middleware.setTokenInRedis,
+        JWT_Middleware.getTokenId,
+        TokenMiddleware.addTokenId,
         (req, res) => {
             res.status(200).json(req.response)
         },
@@ -80,13 +84,9 @@
     router.use(JWT_Middleware.authenticateJWT)
 
     //LIST OF USERS
-    router.get(
-        '/',
-        UserMiddleware.getUsers,
-        (req, res) => {
-            res.status(200).json(req.response)
-        },
-    )
+    router.get('/', UserMiddleware.getUsers, (req, res) => {
+        res.status(200).json(req.response)
+    })
 
     //ONE USER
     router.get('/:userId', UserMiddleware.getUserById, (req, res) => {
