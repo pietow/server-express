@@ -3,8 +3,8 @@
     'use strict'
 
     module.exports = {
-        deleteOneByKey: deleteOneByKey,
         setToken: setToken,
+        deleteOneByKey: deleteOneByKey,
     }
 
     const Redis = require('../redis/redis.module').RedisUtil.redisPromise
@@ -17,7 +17,7 @@
 
     function deleteOneByKey(key) {
         return Redis().then((Redis) => {
-            return Redis.del(key)
+            return Redis.del(key).then((bool) => bool === 1)
         })
     }
 })()

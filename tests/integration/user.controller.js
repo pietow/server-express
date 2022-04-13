@@ -128,7 +128,7 @@ describe('UserController', function () {
                 .set('authorization', `Bearer ${testData.refreshToken}`)
                 .end((err, res) => {
                     expect(res.status).to.equal(200)
-                    expect(res.body).to.include('deleted')
+                    expect(res.body.success).to.include('deleted')
                     done()
                 })
         })

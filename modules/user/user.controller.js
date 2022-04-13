@@ -29,9 +29,14 @@
     )
 
     //LOGOUT
-    router.post('/logout', TokenMiddleware.logout, (req, res) => {
-        res.status(200).json(req.response)
-    })
+    router.post(
+        '/logout',
+        JWT_Middleware.authenticateJWT,
+        TokenMiddleware.deleteTokenId,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
 
     //LOGIN
     router.post(
@@ -49,7 +54,8 @@
     //GENERATE NEW ACCESSTOKEN AND REFRESHTOKEN
     router.post(
         '/generateToken',
-        JWT_Middleware.generateAccessToken,
+        JWT_Middleware.authenticateJWT,
+        TokenMiddleware.deleteTokenId,
         JWT_Middleware.signJWT,
         JWT_Middleware.getTokenId,
         TokenMiddleware.addTokenId,
