@@ -6,6 +6,7 @@
     const ProfileModel = require('../profile/profile.module')().ProfileModel
     const AccommodationModel =
         require('../accommodation/accommodation.module')().AccommodationModel
+    const EMAILREGEX = require('../../helpers/email.regex').EMAILREGEX()
 
     const opts = {
         timestamps: true,
@@ -18,10 +19,15 @@
             /*     type: Schema.Types.ObjectId, */
             /*     default: '624ae069a91bf7b8deb12743', */
             /* }, */
-            fname: { type: String, maxLength: 1 },
+            fname: { type: String, maxLength: 30 },
             lname: { type: String, maxLength: 30 },
             username: { type: String, unique: true },
-            email: { type: String, required: true },
+            email: {
+                type: String,
+                unique: true,
+                required: true,
+                match: EMAILREGEX,
+            },
             password: { type: String, required: true },
             profile: { type: Schema.Types.ObjectId, ref: 'Profile' },
             accommodation: {
