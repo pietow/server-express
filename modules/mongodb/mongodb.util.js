@@ -27,5 +27,14 @@
                     `MongoDB connection failed to DB: ${process.env.DATABASE}`,
                 )
             })
+        mongoose.connection.on('connected', () => {
+            mongoose.connection.db.collection('users').count((err, count) => {
+                if (count === 0) {
+                    const UserModel = require('../user/user.module')().UserModel
+                    UserModel.init()
+                    console.log('User model initialized!')
+                }
+            })
+        })
     }
 })()
