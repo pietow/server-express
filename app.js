@@ -51,7 +51,7 @@ app.use((req, res, next) => {
 // error handler
 app.use((err, req, res, next) => {
     //provide error only in development
-    const error = req.app.get('env') === 'development' ? err : {}
+    const error = req.app.get('env') !== 'production' ? err : {}
     //set status header
     res.status(err.status || 500)
     //render error page
