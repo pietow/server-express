@@ -30,7 +30,10 @@
     }
 
     function updateUser(userId, user) {
-        return UserModel.findByIdAndUpdate(userId, user, { new: true }).exec()
+        return UserModel.findByIdAndUpdate(userId, user, {
+            runValidators: true,
+            new: true,
+        }).exec()
     }
 
     function deleteUser(userId) {

@@ -12,19 +12,27 @@
         {
             photo: { type: Schema.Types.ObjectId, ref: 'profilePhoto.files' },
             onlineStatus: Date,
-            title: String,
-            text: String,
-            motto: String,
-            gender: String,
+            title: { type: String, maxLength: 30 },
+            text: { type: String, maxLength: 500 },
+            motto: { type: String, maxLength: 30 },
+            gender: {
+                type: String,
+                enum: ['Female', 'Male', 'Non-binary', ''],
+            },
             language: [String],
-            city: String,
-            destrict: String,
-            country: String,
+            city: { type: String, maxLength: 100 },
+            destrict: { type: String, maxLength: 100 },
+            country: { type: String, maxLength: 100 },
             birthdate: Date,
             user: { type: Schema.Types.ObjectId, ref: 'User' },
         },
         opts,
     )
 
-    module.exports = mongoose.model('Profile', ProfileSchema)
+    const ProfileModel = mongoose.model('Profile', ProfileSchema)
+    ProfileModel.schema.path('gender').validate((value) => {
+        return /Female|Male|Non-binary/i.test(value)
+    }, 'Invalid gender')
+
+    module.exports = ProfileModel
 })()
