@@ -21,6 +21,7 @@
             { user: userId },
             accommodation,
             {
+                runValidators: true,
                 new: true,
             },
         ).exec()
