@@ -26,7 +26,10 @@
     }
 
     function fetchUserByUserName(username) {
-        return UserModel.findOne({ username: username.username }).lean()
+        return UserModel.findOne({ username: username.username })
+            .populate('profile')
+            .populate('accommodation')
+            .lean()
     }
 
     function updateUser(userId, user) {
