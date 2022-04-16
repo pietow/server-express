@@ -22,7 +22,10 @@
     }
 
     function fetchUserById(userId) {
-        return UserModel.findById(userId).exec()
+        return UserModel.findById(userId)
+            .populate('profile')
+            .populate('accommodation')
+            .exec()
     }
 
     function fetchUserByUserName(username) {

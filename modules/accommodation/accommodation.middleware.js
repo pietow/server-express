@@ -26,6 +26,7 @@
             req.body,
         )
             .then((data) => {
+                if (!req.response) req.response = {}
                 req.response.accommodation = data
                 next()
             })

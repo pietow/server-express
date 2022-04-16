@@ -99,6 +99,14 @@
         res.status(200).json(req.response)
     })
 
+    //MODIFY PROFILE
+    router.put(
+        '/:userId/profile',
+        ProfileMiddleware.modifyProfile,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
     //ONE PROFILE
     router.get(
         '/:userId/profile',
@@ -108,6 +116,14 @@
         },
     )
      
+    //ONE ACCOMMODATION ENTITY
+    router.put(
+        '/:userId/accommodation',
+        AccommodationMiddleware.modifyAccommodation,
+        (req, res) => {
+            res.status(200).json(req.response)
+        },
+    )
     //ONE ACCOMMODATION ENTITY
     router.get(
         '/:userId/accommodation',
