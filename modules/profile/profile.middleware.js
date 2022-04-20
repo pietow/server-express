@@ -11,7 +11,16 @@
         getProfilePhoto: getProfilePhoto,
     }
 
-    const mongoose = require('mongoose')
+    const cloudinary = require('cloudinary').v2
+    const streamifier = require('streamifier')
+
+    cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET,
+        secure: true,
+    })
+
     const ProfileService = require('./profile.module')().ProfileService
 
     function addProfile(req, res, next) {
@@ -50,68 +59,46 @@
     }
 
     function addProfilePhoto(req, res, next) {
-        // Init file stream
-        const connection = mongoose.connection
-        const gfs = new mongoose.mongo.GridFSBucket(connection.db, {
-            bucketName: 'profilePhotos',
-        })
-        console.log('MongoDB file stream established')
+        const streamUpload = (req) => {
+            return new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                    { resource_type: 'image', overwrite: true },
+                    (error, result) => {
+                        if (result) {
+                            resolve(result)
+                        } else {
+                            reject(error)
+                        }
+                    },
+                )
 
-        gfs.find({ metadata: { userId: req.params.userId } }).toArray(
-            (err, files) => {
-                // delete previous image(s)
-                files.forEach((file, index) => {
-                    index < files.length - 1 ? gfs.delete(file._id) : file
+                streamifier.createReadStream(req.file.buffer).pipe(stream)
+            })
+        }
+        async function uploadFile(req) {
+            const uploadedFile = await streamUpload(req)
+            ProfileService.updateProfileByUserId(req.params.userId, {
+                photoId: uploadedFile.public_id,
+            })
+                .then((data) => {
+                    req.response = data
+                    next()
                 })
-                if (!files || err) {
-                    throw new Error("Couldn't find a photo")
-                }
-                ProfileService.updateProfileByUserId(req.params.userId, {
-                    $set: { photo: files[0] },
-                })
-                    .then((data) => {
-                        req.response.profile = data
-                        next()
-                    })
-                    .catch((err) => {
-                        next(err)
-                    })
-            },
-        )
+                .catch((err) => next(err))
+        }
+
+        uploadFile(req)
     }
 
     function getProfilePhoto(req, res, next) {
-        // Init file stream
-        const connection = mongoose.connection
-        const gfs = new mongoose.mongo.GridFSBucket(connection.db, {
-            bucketName: 'profilePhotos',
-        })
-        console.log('MongoDB file stream established')
-
-        gfs.find({ metadata: { userId: req.params.userId } }).toArray(
-            (err, files) => {
-                if (!files || files.length < 1 || err) {
-                    return res.status(404).json({
-                        err: 'No photo exists',
-                    })
-                }
-                //check if valid image
-                if (
-                    files[0].contentType === 'image/jpeg' ||
-                    files[0].contentType === 'image/png'
-                ) {
-                    //read output to browser
-                    //to display the profile photo in the frontend just use:
-                    //<img src="https://_/api/profile/:userId/photo"><img>
-                    const downloadStream = gfs.openDownloadStream(files[0]._id)
-                    downloadStream.pipe(res)
-                } else {
-                    res.status(404).json({
-                        err: 'Not an image',
-                    })
-                }
-                return
-            },
-        )
+        ProfileService.fetchProfileByUserId(req.params.userId)
+            .then((data) => {
+                // get photo by ID and scale to reasonable size
+                req.response = cloudinary.image(`${data.photoId}.jpg`, {
+                    transformation: [{ width: 400, crop: 'fill' }],
+                })
+                next()
+            })
+            .catch((err) => next(err))
     }
 })()
