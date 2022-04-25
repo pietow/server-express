@@ -7,7 +7,7 @@ require('dotenv').config()
 const cors = require('cors')
 
 const MongoDBUtil = require('./modules/mongodb/mongodb.module').MongoDBUtil
-const RedisUtil = require('./modules/redis/redis.module').RedisUtil
+// const RedisUtil = require('./modules/redis/redis.module').RedisUtil
 const UserController = require('./modules/user/user.module')().UserController
 const ProfileController = require('./modules/profile/profile.module')()
     .ProfileController
@@ -28,7 +28,7 @@ app.use(express.json())
 
 //establish connection to MongoDB
 MongoDBUtil.init()
-RedisUtil.init()
+// RedisUtil.init()
 
 app.use('/api/', cors())
 app.use('/api/users', UserController)

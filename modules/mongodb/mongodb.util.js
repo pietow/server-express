@@ -7,7 +7,6 @@
     module.exports = { init: init, connectionString: connectionString }
 
     const mongoose = require('mongoose')
-    const Grid = require('gridfs-stream')
     require('dotenv').config()
 
     function init() {

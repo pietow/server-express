@@ -38,7 +38,7 @@
         '/:userId/photo',
         ProfileMiddleware.getProfilePhoto,
         (req, res, next) => {
-            next()
+            res.status(201).send(req.response)
         },
     )
 

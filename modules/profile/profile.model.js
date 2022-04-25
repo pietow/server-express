@@ -10,7 +10,7 @@
 
     const ProfileSchema = new Schema(
         {
-            photo: { type: Schema.Types.ObjectId, ref: 'profilePhoto.files' },
+            photoId: String,
             onlineStatus: Date,
             title: { type: String, maxLength: 30 },
             text: { type: String, maxLength: 500 },
