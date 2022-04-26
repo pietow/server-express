@@ -94,7 +94,7 @@
         ProfileService.fetchProfileByUserId(req.params.userId)
             .then((data) => {
                 // get photo by ID and scale to reasonable size
-                req.response = cloudinary.image(`${data.photoId}.jpg`, {
+                req.response = cloudinary.url(`${data.photoId}.jpg`, {
                     transformation: [{ width: 400, crop: 'fill' }],
                 })
                 next()
