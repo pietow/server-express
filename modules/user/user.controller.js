@@ -89,6 +89,25 @@
     //AUTHENTICATION OF ALL SUBSEQUENT ROUTES
     router.use(JWT_Middleware.authenticateJWT)
 
+    //CHANGE PASSWORD
+    router.post(
+        '/:userId/check',
+        UserMiddleware.getUserById,
+        PassMiddleware.compareHash,
+        (req, res) => {
+            res.status(201).json(req.response)
+        },
+    )
+    router.put(
+        '/:userId/check',
+        UserMiddleware.getUserById,
+        PassMiddleware.getHash,
+        UserMiddleware.modifyUser,
+        (req, res) => {
+            res.status(201).json(req.response)
+        },
+    )
+
     //LIST OF USERS
     router.get('/', UserMiddleware.getUsers, (req, res) => {
         res.status(200).json(req.response)
@@ -115,7 +134,7 @@
             res.status(200).json(req.response)
         },
     )
-     
+
     //ONE ACCOMMODATION ENTITY
     router.put(
         '/:userId/accommodation',
