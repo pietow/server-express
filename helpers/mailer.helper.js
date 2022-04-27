@@ -44,7 +44,6 @@ module.exports.sendMail = async (
                 pass: pass,
             },
         })
-        console.log(mailContent())
         transport.sendMail({
             from: user,
             to: email,
