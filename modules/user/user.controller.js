@@ -115,7 +115,7 @@
             res.status(200).json(req.response)
         },
     )
-     
+
     //ONE ACCOMMODATION ENTITY
     router.put(
         '/:userId/accommodation',
