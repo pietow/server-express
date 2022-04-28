@@ -24,8 +24,6 @@
                 runValidators: true,
                 new: true,
             },
-        )
-            .populate('user')
-            .exec()
+        ).exec()
     }
 })()

@@ -12,7 +12,7 @@
             availability: { type: String, default: 'No' },
             guests: { type: Number, default: 0 },
             description: { type: String, maxLength: 300 },
-            location: { type: String, maxLength: 100 },
+            place: { type: String, maxLength: 100 },
             user: { type: Schema.Types.ObjectId, ref: 'User' },
         },
         opts,
