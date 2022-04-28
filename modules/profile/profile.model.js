@@ -21,7 +21,7 @@
             },
             language: [String],
             city: { type: String, maxLength: 100 },
-            destrict: { type: String, maxLength: 100 },
+            district: { type: String, maxLength: 100 },
             country: { type: String, maxLength: 100 },
             birthdate: Date,
             user: { type: Schema.Types.ObjectId, ref: 'User' },
