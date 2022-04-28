@@ -14,7 +14,10 @@
     const UserModel = require('./user.module')().UserModel
 
     function fetchUsers() {
-        return UserModel.find({}).exec()
+        return UserModel.find({})
+            .populate('profile')
+            .populate('accommodation')
+            .exec()
     }
 
     function createUser(user) {
