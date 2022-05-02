@@ -107,9 +107,10 @@
     function getProfileThumbnail(req, res, next) {
         ProfileService.fetchProfileByUserId(req.params.userId)
             .then((data) => {
-                req.response = cloudinary.url(`${data.photoId}.jpg`, {
+                const thumbnail = cloudinary.url(`${data.photoId}.jpg`, {
                     transformation: [{ width: 200, crop: 'scale' }],
                 })
+                req.response = JSON.stringify(thumbnail)
                 next()
             })
             .catch((err) => next(err))
