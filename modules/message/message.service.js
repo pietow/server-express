@@ -30,25 +30,33 @@
      */
     function fetchReceivedMessageByUserId(userid) {
         return new Promise((resolve, reject) => {
-            MessageModel.findOne({ receiver: userid })
+            MessageModel.find({ receiver: userid })
                 .populate('sender')
                 .populate('receiver')
                 .lean()
                 .populate('replies')
                 .exec()
-                .then((message) => {
-                    const RepliesPromises = []
-                    message.replies.forEach((reply, index) => {
-                        RepliesPromises.push(
-                            UserModel.findById(reply.sender).then((user) => {
-                                reply.sender = user
-                                return reply
-                            }),
-                        )
-                    })
-                    Promise.all(RepliesPromises).then((replies) => {
-                        message.replies = replies
-                        resolve(message)
+                .then((messages) => {
+                    messages.forEach((message, index) => {
+                        const RepliesPromises = []
+                        if (message.replies) {
+                            message.replies.forEach((reply, index) => {
+                                RepliesPromises.push(
+                                    UserModel.findById(reply.sender).then(
+                                        (user) => {
+                                            reply.sender = user
+                                            return reply
+                                        },
+                                    ),
+                                )
+                            })
+                            Promise.all(RepliesPromises).then((replies) => {
+                                message.replies = replies
+                                if (index === messages.length - 1) {
+                                    resolve(messages)
+                                }
+                            })
+                        }
                     })
                 })
         })
