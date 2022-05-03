@@ -4,7 +4,9 @@
 
     module.exports = {
         addMessage: addMessage,
-        getMessage: getMessage,
+        getSentMessageByUserId,
+        getReceivedMessageByUserId,
+        findInAllMessages,
     }
 
     const MessageService = require('./message.module.js')().MessageService
@@ -18,10 +20,26 @@
             .catch((e) => next(e))
     }
 
-    function getMessage(req, res, next) {
-        MessageService.fetchMessageById(req.params.messageId)
+    function getSentMessageByUserId(req, res, next) {
+        MessageService.fetchSentMessageByUserId(req.params.UserId)
             .then((data) => {
                 req.response = data
+                next()
+            })
+            .catch((e) => next(e))
+    }
+    function getReceivedMessageByUserId(req, res, next) {
+        MessageService.fetchReceivedMessageByUserId(req.params.UserId)
+            .then((data) => {
+                req.response = data
+                next()
+            })
+            .catch((e) => next(e))
+    }
+    function findInAllMessages(req, res, next) {
+        MessageService.searchInAllMessages(req.params.UserId, req.params.key)
+            .then((messages) => {
+                req.response = messages
                 next()
             })
             .catch((e) => next(e))

@@ -1,77 +1,68 @@
 /** @format */
-; (function () {
+;(function () {
     'use strict'
 
     module.exports = {
         createMessage: createMessage,
         fetchReceivedMessageByUserId: fetchReceivedMessageByUserId,
         fetchSentMessageByUserId: fetchSentMessageByUserId,
-        searchInAllMessages: searchInAllMessages
+        searchInAllMessages: searchInAllMessages,
     }
 
-    const MessageModel = require('./message.model')()
-        .MessageModel
-
+    const MessageModel = require('./message.module')().MessageModel
 
     /**
      * Create a new Message Function
-     * @param {Object} userFrom as a userId 
+     * @param {Object} userFrom as a userId
      * @param {Object} userTo   as a userId
-     * @param {String} text 
-     * @param {Date} date 
-     * @returns 
+     * @param {String} text
+     * @param {Date} date
+     * @returns
      */
-    function createMessage(userFrom, userTo, text, date){
-        return MessageModel.create({
-            sender: userFrom,
-            receiver: userTo,
-            text: text,
-            date: new Date()// need to be tested..!
-        }).exec()
+    function createMessage(message) {
+        return MessageModel.create(message)
     }
     /**
-     * Inbox, My Inbox Messages... me as receiver..
-     * @param {Object} userId 
-     * @returns {Object} All messages
+     * inbox, my inbox messages... me as receiver..
+     * @param {object} userid
+     * @returns {object} all messages
      */
-    function fetchReceivedMessageByUserId(userId) {
-        return MessageModel.findOne({ receiver: userId })
+    function fetchReceivedMessageByUserId(userid) {
+        return MessageModel.findOne({ receiver: userid })
             .populate('sender')
             .populate('receiver')
             .exec()
     }
 
     /**
-     * 
-     * Inbox, My Sent Messages... me as sender..
-     * @param {Object} userId 
-     * @returns {Object} All messages
+     *
+     * inbox, my sent messages... me as sender..
+     * @param {object} userid
+     * @returns {object} all messages
      */
-    function fetchSentMessageByUserId(userId) {
-        return MessageModel.findOne({ sender: userId })
+    function fetchSentMessageByUserId(userid) {
+        return MessageModel.findOne({ sender: userid })
             .populate('sender')
             .populate('receiver')
             .exec()
     }
 
     /**
-     * Search in all Messages for the user, as a sender OR as a reciever
-     * @param {Object} userId 
-     * @param {String} key 
+     * search in all messages for the user, as a sender or as a reciever
+     * @param {object} userid
+     * @param {string} key
      * @returns {Array} Array Of Matching Messages
      */
     function searchInAllMessages(userId, key) {
         return MessageModel.find({
-            $and: [{
-                $or: [
-                    { sender: userId },
-                    { receiver: userId }
-                ]
-            },
-            {
-                text: { $regex: key }
-            }
-            ]
+            $and: [
+                {
+                    $or: [{ sender: userId }, { receiver: userId }],
+                },
+                {
+                    text: { $regex: key },
+                },
+            ],
         })
     }
 })()
