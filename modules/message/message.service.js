@@ -31,6 +31,7 @@
         return MessageModel.findOne({ receiver: userid })
             .populate('sender')
             .populate('receiver')
+            .populate('replies')
             .exec()
     }
 
@@ -41,7 +42,7 @@
      * @returns {object} all messages
      */
     function fetchSentMessageByUserId(userid) {
-        return MessageModel.findOne({ sender: userid })
+        return MessageModel.find({ sender: userid })
             .populate('sender')
             .populate('receiver')
             .exec()
