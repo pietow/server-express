@@ -9,6 +9,7 @@
         modifyProfile: modifyProfile,
         addProfilePhoto: addProfilePhoto,
         getProfilePhoto: getProfilePhoto,
+        getProfileThumbnail: getProfileThumbnail,
     }
 
     const cloudinary = require('cloudinary').v2
@@ -61,6 +62,9 @@
     function addProfilePhoto(req, res, next) {
         const streamUpload = (req) => {
             return new Promise((resolve, reject) => {
+                if (req.file.size > 3000000) {
+                    throw new Error("Photos can't be larger than 3 MB")
+                }
                 const stream = cloudinary.uploader.upload_stream(
                     { resource_type: 'image', overwrite: true },
                     (error, result) => {
@@ -71,7 +75,6 @@
                         }
                     },
                 )
-
                 streamifier.createReadStream(req.file.buffer).pipe(stream)
             })
         }
@@ -86,7 +89,6 @@
                 })
                 .catch((err) => next(err))
         }
-
         uploadFile(req)
     }
 
@@ -94,9 +96,25 @@
         ProfileService.fetchProfileByUserId(req.params.userId)
             .then((data) => {
                 // get photo by ID and scale to reasonable size
-                req.response = cloudinary.url(`${data.photoId}.jpg`, {
-                    transformation: [{ width: 400, crop: 'fill' }],
+                const photo = (req.response = cloudinary.url(
+                    `${data.photoId}.jpg`,
+                    {
+                        transformation: [{ width: 700, crop: 'scale' }],
+                    },
+                ))
+                req.response = JSON.stringify(photo)
+                next()
+            })
+            .catch((err) => next(err))
+    }
+
+    function getProfileThumbnail(req, res, next) {
+        ProfileService.fetchProfileByUserId(req.params.userId)
+            .then((data) => {
+                const thumbnail = cloudinary.url(`${data.photoId}.jpg`, {
+                    transformation: [{ width: 200, crop: 'scale' }],
                 })
+                req.response = JSON.stringify(thumbnail)
                 next()
             })
             .catch((err) => next(err))

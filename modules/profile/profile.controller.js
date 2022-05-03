@@ -42,5 +42,13 @@
         },
     )
 
+    router.get(
+        '/:userId/thumbnail',
+        ProfileMiddleware.getProfileThumbnail,
+        (req, res, next) => {
+            res.status(201).send(req.response)
+        },
+    )
+
     module.exports = router
 })()
