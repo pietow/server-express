@@ -28,7 +28,6 @@ app.set('env', 'testing')
 describe('UserController', function () {
     describe(`POST ${baseUri}`, function () {
         it('should add new user', function (done) {
-            this.timeout(10000);  //add timeout.
             request(app)
                 .post(baseUri)
                 .send(UserFixture.newUser)
