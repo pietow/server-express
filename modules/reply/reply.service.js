@@ -11,7 +11,7 @@
      * [ReplyModel](./reply.model.js)
      */
     const ReplyModel = require('./reply.module')().ReplyModel
-    const MessageModel = require('../message/message.model')().MessageModel
+    const MessageModel = require('../message/message.module')().MessageModel
 
     /**
      * # Create a new reply Function
@@ -31,7 +31,7 @@
             // insert a new Reply
             ReplyModel.create(reply).then(rep=>{
                 // push this new replyId to replies array in messages
-                MessageModel.findOneAndUpdate({_id: reply.message._id}, {$push: {replies: rep._id}}).then(insertedReply=>{
+                MessageModel.findOneAndUpdate({_id: reply.messageId}, {$push: {replies: rep._id}}, {new: true,}).then(insertedReply=>{
                     resolve(insertedReply)
                 }).catch(err=>{
                     reject(err)
