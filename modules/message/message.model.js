@@ -12,7 +12,9 @@
             sender: { type: Schema.Types.ObjectId, ref: 'User' },
             receiver: { type: Schema.Types.ObjectId, ref: 'User' },
             text: { type: String }, // do some Validation
-            replies: [{type: Schema.Types.ObjectId, ref: 'Reply', required: false}]// allow null
+            replies: [
+                { type: Schema.Types.ObjectId, ref: 'Reply', required: false },
+            ], // allow null
             /* date: { */
             /*     type: Date, */
             /*     // Set Min &max For Date ex... */

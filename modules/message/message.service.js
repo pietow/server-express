@@ -10,6 +10,7 @@
     }
 
     const MessageModel = require('./message.module')().MessageModel
+    const UserModel = require('../user/user.module')().UserModel
 
     /**
      * Create a new Message Function
@@ -28,11 +29,29 @@
      * @returns {object} all messages
      */
     function fetchReceivedMessageByUserId(userid) {
-        return MessageModel.findOne({ receiver: userid })
-            .populate('sender')
-            .populate('receiver')
-            .populate('replies')
-            .exec()
+        return new Promise((resolve, reject) => {
+            MessageModel.findOne({ receiver: userid })
+                .populate('sender')
+                .populate('receiver')
+                .lean()
+                .populate('replies')
+                .exec()
+                .then((message) => {
+                    const RepliesPromises = []
+                    message.replies.forEach((reply, index) => {
+                        RepliesPromises.push(
+                            UserModel.findById(reply.sender).then((user) => {
+                                reply.sender = user
+                                return reply
+                            }),
+                        )
+                    })
+                    Promise.all(RepliesPromises).then((replies) => {
+                        message.replies = replies
+                        resolve(message)
+                    })
+                })
+        })
     }
 
     /**
