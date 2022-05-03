@@ -4,15 +4,14 @@
 
     module.exports = {
         createReply: createReply,
-        fetchReceivedMessageByUserId: fetchReceivedMessageByUserId,
-        fetchSentMessageByUserId: fetchSentMessageByUserId,
-        searchInAllMessages: searchInAllMessages,
+        getAllRepliesByMessageId: getAllRepliesByMessageId
     }
 
     /**
      * [ReplyModel](./reply.model.js)
      */
     const ReplyModel = require('./reply.module')().ReplyModel
+    const MessageModel = require('../message/message.model')().MessageModel
 
     /**
      * # Create a new reply Function
@@ -28,7 +27,28 @@
      * @returns {Function} create Mongoose Function.
      */
     function createReply(reply) {
-        return ReplyModel.create(reply)
+        return new Promise((resolve, reject)=>{
+            // insert a new Reply
+            ReplyModel.create(reply).then(rep=>{
+                // push this new replyId to replies array in messages
+                MessageModel.findOneAndUpdate({_id: reply.message._id}, {$push: {replies: rep._id}}).then(insertedReply=>{
+                    resolve(insertedReply)
+                }).catch(err=>{
+                    reject(err)
+                })
+            }).catch(error=>{
+                reject(error)
+            })
+        })
+    }
+
+    /**
+     * # Get All Replies
+     * @param {String} messageId 
+     * @returns 
+     */
+    function getAllRepliesByMessageId(messageId){
+        return ReplyModel.find({message: messageId})
     }
    
 })()
