@@ -13,6 +13,8 @@ const ProfileController = require('./modules/profile/profile.module')()
     .ProfileController
 const MessageController = require('./modules/message/message.module')()
     .MessageController
+const ReplyController = require('./modules/reply/reply.module')()
+    .ReplyController
 const AccommodationController = require('./modules/accommodation/accommodation.controller')
 
 const path = require('path')
@@ -36,6 +38,7 @@ app.use('/api/', cors())
 app.use('/api/users', UserController)
 app.use('/api/profile', ProfileController)
 app.use('/api/message', MessageController)
+app.use('/api/reply', ReplyController)
 /* app.use('/api/accommodation', AccommodationController) */
 
 app.get('/', (req, res) => {

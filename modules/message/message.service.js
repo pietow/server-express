@@ -10,6 +10,7 @@
     }
 
     const MessageModel = require('./message.module')().MessageModel
+    const UserModel = require('../user/user.module')().UserModel
 
     /**
      * Create a new Message Function
@@ -28,10 +29,37 @@
      * @returns {object} all messages
      */
     function fetchReceivedMessageByUserId(userid) {
-        return MessageModel.findOne({ receiver: userid })
-            .populate('sender')
-            .populate('receiver')
-            .exec()
+        return new Promise((resolve, reject) => {
+            MessageModel.find({ receiver: userid })
+                .populate('sender')
+                .populate('receiver')
+                .lean()
+                .populate('replies')
+                .exec()
+                .then((messages) => {
+                    messages.forEach((message, index) => {
+                        const RepliesPromises = []
+                        if (message.replies) {
+                            message.replies.forEach((reply, index) => {
+                                RepliesPromises.push(
+                                    UserModel.findById(reply.sender).then(
+                                        (user) => {
+                                            reply.sender = user
+                                            return reply
+                                        },
+                                    ),
+                                )
+                            })
+                            Promise.all(RepliesPromises).then((replies) => {
+                                message.replies = replies
+                                if (index === messages.length - 1) {
+                                    resolve(messages)
+                                }
+                            })
+                        }
+                    })
+                })
+        })
     }
 
     /**
@@ -41,7 +69,7 @@
      * @returns {object} all messages
      */
     function fetchSentMessageByUserId(userid) {
-        return MessageModel.findOne({ sender: userid })
+        return MessageModel.find({ sender: userid })
             .populate('sender')
             .populate('receiver')
             .exec()
