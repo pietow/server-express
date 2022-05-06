@@ -7,6 +7,7 @@
         return {
             MessageController: require('./message.controller'),
             MessageMiddleware: require('./message.middleware'),
+            SocketMiddleware: require('./socket.middleware'),
             MessageService: require('./message.service'),
             MessageModel: require('./message.model'),
         }
